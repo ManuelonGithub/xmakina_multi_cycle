@@ -21,20 +21,41 @@
 
 
 module program_status_register
+#(parameter DEBUG = 0)
 (
     input wire clk,
     input wire status_wr,
     input wire[1:0] wr_en,
     input wire [15:0] wr_data,
     input wire [3:0] status_in, status_wr_mode,
-    output reg [15:0] PSW_out, 
-    output reg [7:0] branch_logic
+    output reg [15:0] PSW_out
 );
     
     enum {C, Z, N, V} STATUS_bits;
-    enum {BEQ, BNE, BHS, BLO, BN, BGE, BLT, BAL} BRANCH_TYPES;
-    
+
     reg [15:0] PSW_reg = 0;
+
+    typedef struct packed {
+        logic C, Z, N, V;
+    } status_t;
+
+    typedef struct packed {
+        status_t status, wr_mode;
+    } psw_debug_t;
+
+    psw_debug_t debug;
+
+    always @ (*) begin : DEBUG_CONSTRUCTS
+        debug.status.C <= PSW_reg[C];
+        debug.status.Z <= PSW_reg[Z];
+        debug.status.N <= PSW_reg[N];
+        debug.status.V <= PSW_reg[V];
+
+        debug.wr_mode.C <= status_wr_mode[C];
+        debug.wr_mode.Z <= status_wr_mode[Z];
+        debug.wr_mode.N <= status_wr_mode[N];
+        debug.wr_mode.V <= status_wr_mode[V];
+    end
     
     always @ (posedge clk)  begin
         if (status_wr) begin
@@ -51,20 +72,9 @@ module program_status_register
                 PSW_reg[15:8] <= wr_data[15:8];
         end
     end
-    
-    always @ (*) 
-    begin
-        PSW_out <= PSW_reg;
-       
-        branch_logic[BEQ] <= PSW_reg[Z];
-        branch_logic[BNE] <= !PSW_reg[Z];
-        branch_logic[BHS] <= PSW_reg[C];
-        branch_logic[BLO] <= !PSW_reg[C];
-        branch_logic[BN]  <= PSW_reg[N];
-        branch_logic[BGE] <= !(PSW_reg[N] ^ PSW_reg[V]);
-        branch_logic[BLT] <= (PSW_reg[N] ^ PSW_reg[V]);
-        branch_logic[BAL] <= 1;
 
+    always @ (*) begin
+        PSW_out <= PSW_reg;
     end
 
 endmodule

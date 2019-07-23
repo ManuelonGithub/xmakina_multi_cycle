@@ -19,13 +19,9 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-//interface ALU_block_io (input carry_in, byte_op, [1:0] func, [15:0] src_a, [15:0] src_b);
-//    logic [15:0] result;
-//    logic carry, ovf;
-//endinterface
-
 module ALU
 #(
+    parameter DEBUG = 0,
     parameter WORD_SIZE = 16
  )
 (
@@ -38,16 +34,9 @@ module ALU
     output reg[3:0] status,
     output reg[WORD_SIZE-1:0] result
 );
-    enum {C, Z, S, V} STATUS_BITS;
+    enum {C, Z, N, V} STATUS_BITS;
 
-    enum {ARRITHMETIC = 0, BOOLEAN_LOGIC, SHIFTER, MANIPULATION, BLOCK_COUNT} BLOCK_SELECTION;
-    
-    enum {ADD, ADDC,  SUB,   SUBC, ADDB, ADDCB,  SUBB,   SUBCB} ARRITHMETIC_BLOCK_FUNCTIONS;
-    enum {XOR, AND,   BIC,   BIS,  XORB, ANDB,   BICB,   BISB}  LOGIC_BLOCK_FUNCTIONS;
-    enum {SRA, RRC,                SRAB, RRCB}                  SHIFTER_BLOCK_FUNCTIONS;
-    enum {MOV, SWPB,  SXT,         MOVB}                        MANIPULATION_BLOCK_FUNCTIONS;
-    
-//    ALU_block_io intf[BLOCK_COUNT](.src_a(src_a), .src_b(src_b), .func(block_func), .carry_in(carry_in), .byte_op(byte_op));
+    typedef enum logic[2:0] {ARRITHMETIC = 0, BOOLEAN_LOGIC, SHIFTER, MANIPULATION, BLOCK_COUNT} ALU_BLOCKS;
     
     wire[1:0] block_sel = alu_func[3:2], block_func = alu_func[1:0];
 
@@ -96,18 +85,6 @@ module ALU
         .result(block_res[MANIPULATION])
     );
     
-//    arrithmetic_block_mi arrithmetic_block(.intf(intf[ARRITHMETIC]));
-//    logic_block_mi logic_block(.intf(intf[BOOLEAN_LOGIC]));
-//    shifter_block_mi shifter_block(.intf(intf[SHIFTER]));
-//    manipulation_block_mi move_block(.intf(intf[MANIPULATION]));
-    
-//    wire[15:0] block_res[0:BLOCK_COUNT-1] = {
-//        intf[ARRITHMETIC].result, 
-//        intf[BOOLEAN_LOGIC].result, 
-//        intf[SHIFTER].result, 
-//        intf[MANIPULATION].result
-//    };
-    
     generate
     genvar i;
         for (i = 0; i < BLOCK_COUNT; i = i + 1) 
@@ -126,8 +103,57 @@ module ALU
     
         status[C] <= block_carry[(block_sel == SHIFTER)];
         status[Z] <= block_zero[block_sel];
-        status[S] <= block_neg[block_sel];
+        status[N] <= block_neg[block_sel];
         status[V] <= block_ovf;
+    end
+
+    // Simulation debug stuff
+
+    typedef enum logic[3:0] {
+        ADD, // Functions pertaining ALU block 0
+        ADDC,
+        SUB, 
+        SUBC,
+
+        XOR, // Functions pertaining ALU block 1
+        AND, 
+        BIC, 
+        BIS, 
+
+        SRA, // Functions pertaining ALU block 2
+        RRC,
+        NA0, // Only has two functions so need to fill the enum
+        NA1, // with N/A's
+
+        MOV, // Functions pertaining ALU block 3
+        SWPB, 
+        SXT
+    } ALU_FUNCTIONS;
+
+    typedef struct packed {
+        logic C, Z, N, V;
+    } status_t;
+
+    typedef struct packed {
+        ALU_FUNCTIONS func;
+        ALU_BLOCKS    block;
+        status_t      status;
+    } alu_debug_t;
+
+    alu_debug_t debug;
+
+    always @ (*) begin
+        if (DEBUG) begin
+            debug.func <= ALU_FUNCTIONS'(alu_func);
+            debug.block <= ALU_BLOCKS'(block_sel);
+
+            debug.status.C <= status[C];
+            debug.status.Z <= status[Z];
+            debug.status.N <= status[N];
+            debug.status.V <= status[V];
+        end
+        else
+            debug <= 0;
     end
 
 endmodule

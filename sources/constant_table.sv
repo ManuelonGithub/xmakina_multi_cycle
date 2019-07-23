@@ -29,7 +29,7 @@ module constant_table
     output wire [WORD_SIZE-1:0] data
 );
 
-    reg [WORD_SIZE-1:0] ConstantTable[7:0] = {0, 1, 2, 4, 8, 32, 48, -1};
+    reg [WORD_SIZE-1:0] ConstantTable[7:0] = {-1, 48, 32, 8, 4, 2, 1, 0};
     
     assign data = ConstantTable[addr];
 endmodule

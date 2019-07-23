@@ -33,8 +33,6 @@ module xmakina_cpu_tb();
     reg[14:0] mem_wr_addr, mem_rd_addr[0:1];
     reg[15:0] mem_wr_data;
 
-    debug_signals_t cpu_debug;
-
     xmakina_cpu_m #(.DEBUG(1)) cpu (
         .clk(clk), 
         .reset(reset),
@@ -44,12 +42,11 @@ module xmakina_cpu_tb();
         .wr_en(mem_wr_en), 
         .wr_addr(mem_wr_addr), 
         .rd_addr(mem_rd_addr),
-        .wr_data(mem_wr_data),
-        .debug_out(cpu_debug)
+        .wr_data(mem_wr_data)
     );
     
     memory_m #(
-        .MEM_FILE("test_mem_0.mem"),
+        .MEM_FILE("square_value_comp.mem"),
         .USE_MEM_FILE(1)
     ) mem (
         .clk(clk),

@@ -21,6 +21,7 @@
 
 
 module instruction_decoder_unit
+#(parameter DEBUG = 0)
 (
     input wire clk, reset, en,
     input wire[15:0] inst_data,
@@ -105,8 +106,44 @@ module instruction_decoder_unit
         SXT
     } ALU_FUNCTIONS;
 
-    MACRO_OPS debug_macro_op;
-    ALU_FUNCTIONS debug_alu_func;
+    typedef enum logic[4:0] {
+        R0,
+        R1,
+        R2,
+        R3,
+        R4,
+        R5,
+        R6,
+        R7,
+        C0,
+        C1,
+        C2,
+        C3,
+        C4,
+        C5,
+        C6,
+        C7,
+        IMM_VAL,
+        ADDR_OFFSET,
+        NONE
+    } OPERANDS;
+
+    typedef enum logic[1:0] {
+        NO_WRITE,
+        LOW_BYTE,
+        HIGH_BYTE,
+        WORD
+    } REG_WRITE_MODE;
+
+    typedef struct packed {
+        MACRO_OPS macro_op;
+        BRANCH_CONDITIONS branch_cond;
+        ALU_FUNCTIONS ALU_func;
+        OPERANDS src_a, src_b, dst;
+        REG_WRITE_MODE wb_mode;
+    } decoder_debug_t;  
+
+    decoder_debug_t debug;
 
     reg[15:0] inst;
 
@@ -118,9 +155,31 @@ module instruction_decoder_unit
         inst <= 0;
     end
 
-    always @ (*) begin : DEBUG_SIGNALS
-        debug_macro_op <= MACRO_OPS'(macro_op);
-        debug_alu_func <= ALU_FUNCTIONS'(alu_func);
+    always @ (*) begin : DEBUG_CONSTRUCTS
+        if (DEBUG) begin
+            debug.macro_op <= MACRO_OPS'(macro_op);
+            debug.branch_cond <= BRANCH_CONDITIONS'(branch_cond);
+            debug.ALU_func <= ALU_FUNCTIONS'(alu_func);
+            debug.src_a <= OPERANDS'(src_a);
+
+            if (const_sel)
+                debug.src_b <= OPERANDS'({1'b1,src_b});
+            else if (imm_val_sel)
+                debug.src_b <= IMM_VAL;
+            else if (offset_sel)
+                debug.src_b <= ADDR_OFFSET;
+            else
+                debug.src_b <= OPERANDS'(src_b);
+
+            if (reg_wb_mode == 0)
+                debug.dst <= NONE;
+            else
+                debug.dst <= OPERANDS'(dst);
+
+            debug.wb_mode <= REG_WRITE_MODE'(reg_wb_mode);
+        end
+        else
+            debug <= 0;
     end
     
     always @ (posedge clk) begin : INSTRUCTION_DATA_REGISTER
@@ -156,9 +215,9 @@ module instruction_decoder_unit
         addr_offset <= {{9{inst[13]}}, inst[13:7]};
         
         if (inst[13])   // Conditional branch
-            branch_offset <= {{6{inst[9]}}, inst[9:0]};
+            branch_offset <= {{5{inst[9]}}, inst[9:0], 1'b0};
         else
-            branch_offset <= {{3{inst[12]}}, inst[12:0]};
+            branch_offset <= {{2{inst[12]}}, inst[12:0], 1'b0};
 
         imm_val[7:0] = inst[10:3];
         case (inst[12:11]) 
@@ -233,7 +292,6 @@ module instruction_decoder_unit
     
     always @ (*) begin : CONTROL_SIGNALS_DECODING
         byte_inst <= inst[6];
-        status_wr_mode <= 4'b1111;
 
         case (inst[15:13]) inside // ALU function select control
             3'b000, 3'b011:     // Immediate move
@@ -279,6 +337,17 @@ module instruction_decoder_unit
                 mem_wr <= 0;
                 pc_wr <= 0;
             end
+        endcase
+
+        case(alu_op_func[3:2])
+            0:  // Arrithmetic operation
+                status_wr_mode <= 4'b1111;
+            1:  // Boolean Logic operation
+                status_wr_mode <= 4'b0110;
+            2:  // Shift/Rotate operation
+                status_wr_mode <= 4'b1110;
+            3:  // Manipulation operation
+                status_wr_mode <= 4'b0000;
         endcase
     end
     

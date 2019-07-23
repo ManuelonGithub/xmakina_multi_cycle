@@ -35,8 +35,7 @@ module xmakina_cpu_m
     output reg rd_en[0:1],
     output reg[1:0] wr_en, 
     output reg[14:0] wr_addr, rd_addr[0:1],
-    output reg[15:0] wr_data,
-    output debug_signals_t debug_out
+    output reg[15:0] wr_data
 );
 
     // Internal inputs to the memory controller
@@ -178,7 +177,7 @@ module xmakina_cpu_m
         .fetch_data     (fetch_data)
     );
     
-    instruction_decoder_unit decoder_unit (
+    instruction_decoder_unit #(.DEBUG(DEBUG)) decoder_unit (
         .clk           (clk),
         .reset         (reset),
         .en            (decode_en),
@@ -205,7 +204,6 @@ module xmakina_cpu_m
     );
     
     control_unit #(.DEBUG(DEBUG)) control_unit (
-        .exec_state_reg(exec_state_reg),
         .clk          (clk),
         .reset        (reset),
         .fetch_done   (fetch_done),
@@ -226,7 +224,6 @@ module xmakina_cpu_m
     );
 
     register_file #(.DEBUG(DEBUG)) register_file (
-        .file_out(reg_file),
         .clk     (clk),
         .rd_size (~byte_inst),
         .wr_en   (reg_wr_en),
@@ -255,7 +252,7 @@ module xmakina_cpu_m
         .src_out    (alu_src_data)
     );
 
-    program_status_register program_status_register (
+    program_status_register #(.DEBUG(DEBUG)) program_status_register (
         .clk           (clk),
         .status_wr     (status_update),
         .wr_en         (0),
@@ -265,7 +262,7 @@ module xmakina_cpu_m
         .PSW_out       (PSW_out)
     );
 
-    ALU ALU (
+    ALU #(.DEBUG(DEBUG)) ALU (
         .alu_func(alu_func),
         .carry_in(0),
         .byte_op (byte_inst),
@@ -291,38 +288,5 @@ module xmakina_cpu_m
         if (alu_out_en)
             alu_out <= alu_result;
     end
-
-    generate 
-        if (DEBUG) begin
-            cpu_debug_module cpu_debug_module (
-                .fetch_en      (fetch_en),
-                .pc_fetch_wr   (pc_fetch_wr),
-                .decode_en     (decode_en),
-                .alu_in_en     (alu_in_en),
-                .alu_out_en    (alu_out_en),
-                .fetch_done    (fetch_done),
-                .alu_in_a      (alu_in_a),
-                .alu_in_b      (alu_in_b),
-                .alu_out       (alu_out),
-                .reg_file      (reg_file),
-                .exec_state_reg(exec_state_reg),
-                .macro_op     (macro_op),
-                .alu_func      (alu_func),
-                .src_select    ({offset_sel, imm_val_sel, const_sel}),
-                .reg_src_a     (reg_src_a),
-                .reg_src_b     (reg_src_b),
-                .dst_reg       (dst_reg),
-                .reg_wr_en     (reg_wr_en),
-                .status_wr     (status_update),
-                .pc_branch_wr  (pc_branch_wr),
-                .branch_cond   (branch_cond),
-                .status        (PSW_out[3:0]),
-
-                .debug_out     (debug_out)
-            );
-        end
-        else
-            assign debug_out = 0;
-    endgenerate
 
 endmodule

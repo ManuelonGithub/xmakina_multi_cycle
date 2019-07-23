@@ -32,14 +32,11 @@ module register_file
     input wire[$clog2(REG_COUNT-1)-1:0] wr_addr, rd_addr[0:1],
     input wire[REG_WIDTH-1:0] wr_data, PC_in,
 
-    output reg[REG_WIDTH-1:0] file_out[0:REG_COUNT-1],
-
     output reg[1:0] PC_wr_en,
     output reg[REG_WIDTH-1:0] rd_data[0:1], PC_out
 );
 
     localparam HALF_WORD = REG_WIDTH/2;
-    enum {WORD, BYTE} ACCESS_TYPES;
     
     localparam PC_ADDR = 7;
     
@@ -52,23 +49,56 @@ module register_file
     assign PC_wr_en = {{2{(wr_addr == PC_ADDR)}} & wr_en};
     assign PC_out = wr_data;
 
-    generate
-        if (DEBUG) begin
-            always @ (*) begin
-                for (int i = 0; i < REG_COUNT-1; i++) begin
-                    file_out[i] <= {register_h[i], register_l[i]};
-                end
+    typedef enum logic[2:0] {
+        R0,
+        R1,
+        R2,
+        R3,
+        R4,
+        R5,
+        R6,
+        R7
+    } OPERANDS;
 
-                file_out[PC_ADDR] <= PC_in;
-            end
+    typedef enum logic[1:0] {
+        NO_WRITE,
+        LOW_BYTE,
+        HIGH_BYTE,
+        WORD
+    } REG_WRITE_MODE;
+
+    typedef struct packed {
+        logic[15:0] R0, R1, R2, R3, R4, R5, R6, R7;
+    } reg_file_t;
+
+    typedef struct packed {
+        OPERANDS dst, src_a, src_b;
+        logic[15:0] R0, R1, R2, R3, R4, R5, R6, R7;
+        REG_WRITE_MODE wr_mode;
+    } reg_file_debug_t;
+
+    reg_file_debug_t debug;
+
+    always @ (*) begin : DEBUG_CONSTRUCTS
+        if (DEBUG) begin
+            debug.src_a <= OPERANDS'(rd_addr[0]);
+            debug.src_b <= OPERANDS'(rd_addr[1]);
+            debug.dst <= OPERANDS'(wr_addr);
+
+            debug.R0 <= {register_h[0], register_l[0]};
+            debug.R1 <= {register_h[1], register_l[1]};
+            debug.R2 <= {register_h[2], register_l[2]};
+            debug.R3 <= {register_h[3], register_l[3]};
+            debug.R4 <= {register_h[4], register_l[4]};
+            debug.R5 <= {register_h[5], register_l[5]};
+            debug.R6 <= {register_h[6], register_l[6]};
+            debug.R7 <= PC_in;
+
+            debug.wr_mode <= REG_WRITE_MODE'(wr_en);
         end
         else
-            always @ (*) begin
-                for (int i = 0; i < REG_COUNT; i++) begin
-                    file_out[i] <= 0;
-                end
-            end
-    endgenerate
+            debug <= 0;
+    end
 
     initial begin
         for (int i = 0; i < REG_COUNT; i++) begin
@@ -79,9 +109,9 @@ module register_file
     
     always @ (posedge clk) 
     begin
-        if (wr_en[BYTE])
+        if (wr_en[0])
             register_l[wr_addr] <= wr_data[HALF_WORD-1:0];
-        if (wr_en[WORD])
+        if (wr_en[1])
             register_h[wr_addr] <= wr_data[REG_WIDTH-1:HALF_WORD];
     end
     

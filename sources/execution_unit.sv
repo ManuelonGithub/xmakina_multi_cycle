@@ -31,10 +31,7 @@ module control_unit
     input wire[1:0] reg_wb_mode,              //          "
     input wire[2:0] branch_cond, macro_op,    //          "
 
-    // input wire mem_rd_done,
     input wire[15:0] status_reg,
-
-    output reg[9:0] exec_state_reg,
 
     output reg fetch_en, // Fetch Unit control signal
     output reg pc_fetch_wr, pc_branch_wr, // PC control signals
@@ -56,6 +53,18 @@ module control_unit
     } MACRO_OPS;
 
     typedef enum logic[3:0] {
+        EQUAL,
+        NOT_EQUAL,
+        CARRY,
+        NO_CARRY,
+        NEGATIVE,
+        GREATER_OR_EQUAL,
+        LESS,
+        ALWAYS,
+        NO_BRANCH
+    } BRANCH_CONDITIONS;
+
+    typedef enum logic[3:0] {
         INIT,
         FETCH,
         WAIT_FETCH,
@@ -65,7 +74,15 @@ module control_unit
         NOP_EXECUTE,
         MEMORY_ACCESS,
         WRITE_BACK
-    } EXECUTION_STATES;
+    } MACHINE_STATES;
+
+    typedef struct packed {
+        MACHINE_STATES state;
+        BRANCH_CONDITIONS branch_cond;
+        MACRO_OPS macro_op;
+    } control_debug_t;
+
+    control_debug_t debug;
 
     enum {C, Z, N, V} STATUS_BITS;
 
@@ -93,69 +110,35 @@ module control_unit
         state <= (1 << INIT);
     end
 
-    always @ (*) begin
+    always @ (*) begin : DEBUG_CONSTRUCTS
         if (DEBUG) begin
-            exec_state_reg <= state;
+        case (1'b1) 
+            state[INIT]:
+                debug.state <= INIT;
+            state[FETCH]:
+                debug.state <= FETCH;
+            state[WAIT_FETCH]:
+                debug.state <= WAIT_FETCH;
+            state[DECODE]:
+                debug.state <= DECODE;
+            state[OPERAND_FETCH]:
+                debug.state <= OPERAND_FETCH;
+            state[EXECUTE]:
+                debug.state <= EXECUTE;
+            state[MEMORY_ACCESS]:
+                debug.state <= MEMORY_ACCESS;
+            state[WRITE_BACK]:
+                debug.state <= WRITE_BACK;
+            default:
+                debug.state <= INIT;
+        endcase
+
+            debug.macro_op <= MACRO_OPS'(macro_op);
+            debug.branch_cond <= BRANCH_CONDITIONS'(branch_cond);
         end
         else
-            exec_state_reg <= 0;
+            debug <= 0;
     end
-
-    /*
-    always @ (posedge clk) begin : CAPTURE_AND_PROCESS
-        case (1'b1) 
-            state[INIT]: begin
-                do_fetch <= 1;
-                state <= (1 << FETCH);
-            end
-            
-            state[FETCH]: begin
-                do_fetch <= 0;
-                state <= (1 << WAIT_FETCH);
-            end
-
-            state[WAIT_FETCH]: begin
-                if (fetch_done)
-                    state <= (1 << DECODE);
-                else
-                    state <= (1 << WAIT_FETCH);
-            end
-            
-            state[DECODE]: begin
-                state <= (1 << OPERAND_FETCH);
-            end
-
-            state[OPERAND_FETCH]: begin
-                // Branch condition stuff may be done here 
-                // Memory access stuff as well
-
-                case (macro_op)
-                    SYSTEM_CALL, CONDITIONAL_EXEC:
-                        state <= (1 << NOP_EXECUTE);
-                    default:
-                        state <= (1 << EXECUTE);
-                endcase
-            end
-
-            state[EXECUTE]: begin
-                case (macro_op)
-                    LOAD, STORE:
-                        state <= (1 << MEMORY_ACCESS);
-                    default:
-                        state <= (1 << WRITE_BACK);
-                endcase
-            end
-
-            state[NOP_EXECUTE], state[WRITE_BACK]:
-                state <= (1 << FETCH);
-
-            state[MEMORY_ACCESS]: begin
-                rd_mem <= 0;
-
-            end
-        endcase
-    end
-    */
     
     always @ (negedge clk) begin : STATE_MACHINE
         case (1'b1) 

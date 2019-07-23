@@ -79,11 +79,10 @@ package debug;
     typedef enum logic[3:0] {
         INIT,
         FETCH,
-        INC_PC,
+        WAIT_FETCH,
         DECODE,
         OPERAND_FETCH,
-        ALU_EXECUTE,
-        BRANCH_EXECUTE,
+        EXECUTE,
         NOP_EXECUTE,
         MEMORY_ACCESS,
         WRITE_BACK
@@ -121,30 +120,40 @@ package debug;
         logic[15:0] R0, R1, R2, R3, R4, R5, R6, R7;
     } reg_file_t;
 
+    typedef enum logic[1:0] {C, Z, N, V} STATUS_BITS;
+
+    typedef struct packed {
+        logic C, Z, N, V;
+    } status_t;
+
 	typedef struct packed {
-		logic fetch_en, pc_fetch_wr, decode_en, alu_in_en, alu_out_en, fetch_done;
-		logic[15:0] alu_in_a, alu_in_b, alu_out;
-		reg_file_t reg_file;
-		EXECUTION_STATES exec_state;
+		logic fetch_en, pc_fetch_wr, decode_en, alu_in_en, alu_out_en;
+        logic fetch_done, pc_branch_wr, status_wr;
+        logic[15:0] alu_in_a, alu_in_b, alu_out;
+        reg_file_t reg_file;
+        status_t status;
+        EXECUTION_STATES exec_state;
+        REG_WRITE_MODE reg_wr;
 		MACRO_OPERATIONS macro_op;
+        BRANCH_CONDITIONS branch_cond;
 		ALU_FUNCTIONS alu_func;
 		OPERANDS alu_a_org, alu_b_org, dst_reg;
-		REG_WRITE_MODE reg_wr;
 	} debug_signals_t;
 endpackage
 
 
 import debug::*;
 
-module cpu_debug_m
+module cpu_debug_module
 (
-	input wire fetch_en, pc_fetch_wr, decode_en, alu_in_en, alu_out_en, fetch_done,
+	input wire fetch_en, pc_fetch_wr, decode_en, alu_in_en, alu_out_en,
+    input wire fetch_done, status_wr, pc_branch_wr, 
+    input wire[1:0] reg_wr_en,
+    input wire[2:0] macro_op, src_select, reg_src_a, reg_src_b, dst_reg,
+    input wire[2:0] branch_cond,
+    input wire[3:0] alu_func, status,
+    input wire[9:0] exec_state_reg,
 	input wire[15:0] alu_in_a, alu_in_b, alu_out, reg_file[0:7],
-	input wire[9:0] exec_state_reg,
-	input wire[2:0] macro_op,
-	input wire[3:0] alu_func,
-	input wire[2:0] src_select, reg_src_a, reg_src_b, dst_reg,
-	input wire[1:0] reg_wr_en,
 	output debug_signals_t debug_out
 );
 
@@ -159,26 +168,30 @@ module cpu_debug_m
 		debug_out.alu_in_b    <= alu_in_b;
 		debug_out.alu_out     <= alu_out;
 		debug_out.reg_file    <= {>>{reg_file}};
+        debug_out.pc_branch_wr <= pc_branch_wr;
+        debug_out.status_wr <= status_wr;
+        debug_out.status <= status;
 
 		debug_out.macro_op  <= MACRO_OPERATIONS'(macro_op);
 		debug_out.alu_func  <= ALU_FUNCTIONS'(alu_func);
 		debug_out.alu_a_org <= OPERANDS'(reg_src_a);
 		debug_out.dst_reg   <= OPERANDS'(dst_reg);
 		debug_out.reg_wr    <= REG_WRITE_MODE'(reg_wr_en);
+        debug_out.branch_cond <= BRANCH_CONDITIONS'(branch_cond);
 
         case (1'b1) 
             exec_state_reg[INIT]:
                 debug_out.exec_state <= INIT;
             exec_state_reg[FETCH]:
                 debug_out.exec_state <= FETCH;
-            exec_state_reg[INC_PC]:
-                debug_out.exec_state <= INC_PC;
+            exec_state_reg[WAIT_FETCH]:
+                debug_out.exec_state <= WAIT_FETCH;
             exec_state_reg[DECODE]:
                 debug_out.exec_state <= DECODE;
             exec_state_reg[OPERAND_FETCH]:
                 debug_out.exec_state <= OPERAND_FETCH;
-            exec_state_reg[ALU_EXECUTE]:
-                debug_out.exec_state <= ALU_EXECUTE;
+            exec_state_reg[EXECUTE]:
+                debug_out.exec_state <= EXECUTE;
             exec_state_reg[MEMORY_ACCESS]:
                 debug_out.exec_state <= MEMORY_ACCESS;
             exec_state_reg[WRITE_BACK]:

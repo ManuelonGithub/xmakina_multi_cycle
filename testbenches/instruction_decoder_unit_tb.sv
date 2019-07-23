@@ -30,7 +30,7 @@ module instruction_decoder_unit_tb();
     reg[2:0] operation;
     reg[15:0] imm_val, addr_offset, branch_offset;
     
-    instruction_decoder_unit_m decoder(.*);
+    instruction_decoder_unit decoder(.*);
     
     initial begin
         clk <= 0;

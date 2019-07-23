@@ -5,7 +5,7 @@
 // 
 // Create Date: 06/19/2019 08:03:47 PM
 // Design Name: 
-// Module Name: instruction_fetch_unit_m
+// Module Name: instruction_fetch_unit
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module instruction_fetch_unit_m
+module instruction_fetch_unit
 #(
     parameter WORD_SIZE = 16
  )
@@ -35,13 +35,12 @@ module instruction_fetch_unit_m
     output reg[WORD_SIZE-1:0] mem_addr,
     
     output reg fetch_err, int_ret, fetch_done,
-    output reg[WORD_SIZE-1:0] fetch_data, PC_out
+    output reg[WORD_SIZE-1:0] fetch_data
 );
     
     always @ (*) 
     begin
         int_ret <= (PC_in == {WORD_SIZE{1'b1}});
-        PC_out <= PC_in + (WORD_SIZE/8);
         
         mem_en <= (en & ~int_ret);
         mem_addr <= PC_in;

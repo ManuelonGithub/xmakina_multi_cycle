@@ -5,7 +5,7 @@
 // 
 // Create Date: 06/19/2019 03:46:43 PM
 // Design Name: 
-// Module Name: memory_controller_m
+// Module Name: cpu_memory_controller
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module memory_controller_m
+module cpu_memory_controller
 #(
     parameter MEM_DEPTH = 32768,
     parameter WORD_SIZE = 16,

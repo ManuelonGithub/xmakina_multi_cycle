@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 07/19/2019 09:18:09 PM
+// Create Date: 07/22/2019 03:28:42 PM
 // Design Name: 
-// Module Name: constant_table
+// Module Name: pc_write_selector
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,16 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module constant_table
-#(
-	parameter WORD_SIZE = 16
- )
-(
-    input wire [2:0] addr,
-    output wire [WORD_SIZE-1:0] data
-);
+module pc_write_selector(
 
-    reg [WORD_SIZE-1:0] ConstantTable[7:0] = {0, 1, 2, 4, 8, 32, 48, -1};
-    
-    assign data = ConstantTable[addr];
+    );
 endmodule

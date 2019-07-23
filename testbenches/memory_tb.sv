@@ -43,9 +43,9 @@ module memory_tb();
     reg fetch_err, fetch_done;
     reg[15:0] PC_current, fetch_data, PC_out;
     
-    memory_controller_m mem_controller(.*);
+    cpu_memory_controller mem_controller(.*);
     
-    instruction_fetch_unit_m fetch(
+    instruction_fetch_unit fetch(
         .en(fetch_en),
         .PC_in(PC_in),
         .mem_err(invalid_rd_addr[0]),

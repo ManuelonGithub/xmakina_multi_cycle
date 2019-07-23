@@ -24,7 +24,7 @@
 //    logic carry, ovf;
 //endinterface
 
-module ALU_m
+module ALU
 #(
     parameter WORD_SIZE = 16
  )

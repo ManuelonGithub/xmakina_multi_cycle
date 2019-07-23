@@ -5,7 +5,7 @@
 // 
 // Create Date: 05/31/2019 11:33:47 PM
 // Design Name: 
-// Module Name: register_file_m
+// Module Name: register_file
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module register_file_m
+module register_file
 #(
     parameter DEBUG = 0,
     parameter REG_WIDTH = 16,

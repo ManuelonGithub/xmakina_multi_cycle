@@ -41,6 +41,7 @@ module xmakina_cpu_m
 
     // Internal inputs to the memory controller
     reg mem_wr_en, mem_wr_size;
+    reg[1:0] psw_wr = 0;
     reg[15:0] mem_wr_addr, mem_wr_data;
 
     reg mem_rd_en[0:1], mem_rd_size[0:1];
@@ -57,11 +58,8 @@ module xmakina_cpu_m
     reg pc_fetch_wr, pc_branch_wr;
     reg[1:0] pc_reg_wr;
 
-    assign pc_branch_wr = 0;
     // Program counter inputs
-    reg[15:0] pc_reg_in, pc_next_fetch, pc_next_branch;
-    
-    assign pc_next_branch = 0;
+    reg[15:0] pc_reg_in, pc_next_fetch;
     
     // Program Counter Output. (PC_out -> Register File & Fetch Unit)
     reg[15:0] PC_out;
@@ -80,9 +78,10 @@ module xmakina_cpu_m
     
     // Decoder unit outputs 
     // Decoded Execution unit 'operands'
-    reg[1:0] reg_wb;
+    reg      branch_en, new_status_en;
+    reg[1:0] reg_wb_mode;
     reg[2:0] branch_cond, macro_op;
-    reg[3:0] valid_status;
+    reg[3:0] status_wr_mode;
 
     // Decoded Instruction operands
     reg[2:0] dst_reg, reg_src_a, reg_src_b;
@@ -115,11 +114,15 @@ module xmakina_cpu_m
     reg[15:0] alu_out = 0;
 
     // ALU outputs 
-    reg[3:0] alu_status;
+    reg[3:0]  alu_status;
     reg[15:0] alu_result;
+
+    reg       status_update;
+    reg[15:0] PSW_out;
 
     // register file debug
     reg[15:0] reg_file[0:7];
+    reg[9:0] exec_state_reg;
 
     assign mem_wr_data = reg_out[1];
     assign mem_wr_addr = alu_out;
@@ -127,7 +130,7 @@ module xmakina_cpu_m
     assign mem_rd_addr[1] = alu_out;
     assign mem_rd_size[1] = ~byte_inst;
 
-    memory_controller_m memory_controller (
+    cpu_memory_controller memory_controller (
         .clk            (clk), 
         .reset          (reset), 
         .wr_en          (mem_wr_en), 
@@ -150,18 +153,17 @@ module xmakina_cpu_m
         .rd_data        (mem_rd_data)
     );
     
-    program_counter_m program_counter (
+    program_counter_unit program_counter (
         .clk      (clk),
         .fetch_en (pc_fetch_wr),
         .branch_en(pc_branch_wr),
         .reg_wr_en(pc_reg_wr),
         .reg_in   (pc_reg_in),
-        .fetch_in (pc_next_fetch),
-        .branch_in(pc_next_branch),
+        .branch_offset(branch_offset),
         .PC_out   (PC_out)
     );
     
-    instruction_fetch_unit_m fetch_unit (
+    instruction_fetch_unit fetch_unit (
         .en             (fetch_en),
         .PC_in          (PC_out),
         .mem_err        (invalid_mem_rd_addr[0]),
@@ -173,51 +175,57 @@ module xmakina_cpu_m
         .fetch_err      (fetch_err),
         .int_ret        (int_ret),
         .fetch_done     (fetch_done),
-        .fetch_data     (fetch_data), 
-        .PC_out         (pc_next_fetch)
+        .fetch_data     (fetch_data)
     );
     
-    instruction_decoder_unit_m decoder_unit (
+    instruction_decoder_unit decoder_unit (
+        .clk           (clk),
+        .reset         (reset),
+        .en            (decode_en),
+        .inst_data     (fetch_data),
+        .branch_en     (branch_en),
+        .new_status_en (new_status_en),
+        .reg_wb_mode   (reg_wb_mode),
+        .branch_cond   (branch_cond),
+        .macro_op      (macro_op),
+        .status_wr_mode(status_wr_mode),
+        .dst           (dst_reg),
+        .src_a         (reg_src_a),
+        .src_b         (reg_src_b),
+        .imm_val       (imm_val),
+        .addr_offset   (addr_offset),
+        .branch_offset (branch_offset),
+        .byte_inst     (byte_inst),
+        .alu_func      (alu_func),
+        .imm_val_sel   (imm_val_sel),
+        .offset_sel    (offset_sel),
+        .const_sel     (const_sel),
+        .mem_wr        (mem_wr),
+        .pc_wr         (pc_wr)
+    );
+    
+    control_unit #(.DEBUG(DEBUG)) control_unit (
+        .exec_state_reg(exec_state_reg),
         .clk          (clk),
         .reset        (reset),
-        .en           (decode_en),
-        .inst_data    (fetch_data),
-        .reg_wb       (reg_wb),
+        .fetch_done   (fetch_done),
+        .reg_wb_mode  (reg_wb_mode),
+        .branch_en    (branch_en),
+        .new_status_en(new_status_en),
         .branch_cond  (branch_cond),
         .macro_op     (macro_op),
-        .valid_status (valid_status),
-        .dst          (dst_reg),
-        .src_a        (reg_src_a),
-        .src_b        (reg_src_b),
-        .imm_val      (imm_val),
-        .addr_offset  (addr_offset),
-        .branch_offset(branch_offset),
-        .byte_inst    (byte_inst),
-        .alu_func     (alu_func),
-        .imm_val_sel  (imm_val_sel),
-        .offset_sel   (offset_sel),
-        .const_sel    (const_sel),
-        .mem_wr       (mem_wr),
-        .pc_wr        (pc_wr)
-    );
-    
-    execution_unit_m #(.DEBUG(DEBUG)) execution_unit (
-        .exec_state_reg(exec_state_reg),
-        .clk        (clk),
-        .reset      (reset),
-        .fetch_done (fetch_done),
-        .reg_wb     (reg_wb),
-        .branch_cond(branch_cond),
-        .macro_op   (macro_op),
-        .fetch_en   (fetch_en),
-        .pc_fetch_wr(pc_fetch_wr),
-        .decode_en  (decode_en),
-        .alu_in_en (alu_in_en),
-        .alu_out_en (alu_out_en),
-        .reg_wr_en  (reg_wr_en)
+        .status_reg   (PSW_out),
+        .fetch_en     (fetch_en),
+        .pc_fetch_wr  (pc_fetch_wr),
+        .pc_branch_wr (pc_branch_wr),
+        .decode_en    (decode_en),
+        .alu_in_en    (alu_in_en),
+        .alu_out_en   (alu_out_en),
+        .reg_wr_en    (reg_wr_en),
+        .status_wr    (status_update)
     );
 
-    register_file_m #(.DEBUG(DEBUG)) register_file (
+    register_file #(.DEBUG(DEBUG)) register_file (
         .file_out(reg_file),
         .clk     (clk),
         .rd_size (~byte_inst),
@@ -231,12 +239,12 @@ module xmakina_cpu_m
         .PC_out  (pc_reg_in)
     );
 
-    constant_table_m constant_table (
+    constant_table constant_table (
         .addr(reg_src_b),
         .data(const_out)
     );
 
-    alu_src_selector_m src_selector (
+    alu_src_selector src_selector (
         .const_sel  (const_sel),
         .imm_val_sel(imm_val_sel),
         .offset_sel (offset_sel),
@@ -247,7 +255,17 @@ module xmakina_cpu_m
         .src_out    (alu_src_data)
     );
 
-    ALU_m ALU (
+    program_status_register program_status_register (
+        .clk           (clk),
+        .status_wr     (status_update),
+        .wr_en         (0),
+        .wr_data       (wr_data),
+        .status_in     (alu_status),
+        .status_wr_mode(status_wr_mode),
+        .PSW_out       (PSW_out)
+    );
+
+    ALU ALU (
         .alu_func(alu_func),
         .carry_in(0),
         .byte_op (byte_inst),
@@ -257,12 +275,10 @@ module xmakina_cpu_m
         .result  (alu_result)
     );
     
-    write_back_selector_m write_back_selector (
+    write_back_selector write_back_selector (
         .mem_wr  (mem_wr),
-        .pc_wr   (pc_wr),
         .alu_in  (alu_out),
         .mem_in  (mem_rd_data[1]),
-        .pc_in   (PC_out),
         .data_out(reg_wr_data)
     );
 
@@ -278,7 +294,7 @@ module xmakina_cpu_m
 
     generate 
         if (DEBUG) begin
-            cpu_debug_m cpu_debug (
+            cpu_debug_module cpu_debug_module (
                 .fetch_en      (fetch_en),
                 .pc_fetch_wr   (pc_fetch_wr),
                 .decode_en     (decode_en),
@@ -297,6 +313,11 @@ module xmakina_cpu_m
                 .reg_src_b     (reg_src_b),
                 .dst_reg       (dst_reg),
                 .reg_wr_en     (reg_wr_en),
+                .status_wr     (status_update),
+                .pc_branch_wr  (pc_branch_wr),
+                .branch_cond   (branch_cond),
+                .status        (PSW_out[3:0]),
+
                 .debug_out     (debug_out)
             );
         end

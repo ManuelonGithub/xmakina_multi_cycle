@@ -5,7 +5,7 @@
 // 
 // Create Date: 07/19/2019 09:18:09 PM
 // Design Name: 
-// Module Name: alu_src_selector_m
+// Module Name: alu_src_selector
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module alu_src_selector_m
+module alu_src_selector
 #(
 	parameter WORD_SIZE = 16
  )

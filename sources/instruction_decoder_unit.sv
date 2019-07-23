@@ -5,7 +5,7 @@
 // 
 // Create Date: 06/20/2019 05:43:34 PM
 // Design Name: 
-// Module Name: instruction_decoder_unit_m
+// Module Name: instruction_decoder_unit
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,14 +20,15 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module instruction_decoder_unit_m
+module instruction_decoder_unit
 (
     input wire clk, reset, en,
     input wire[15:0] inst_data,
     
-    output reg[1:0] reg_wb,
+    output reg branch_en, new_status_en,
+    output reg[1:0] reg_wb_mode,
     output reg[2:0] branch_cond, macro_op,
-    output reg[3:0] valid_status,
+    output reg[3:0] status_wr_mode,
 
     output reg[2:0] dst, src_a, src_b,
     output reg[15:0] imm_val, addr_offset, branch_offset,
@@ -180,9 +181,10 @@ module instruction_decoder_unit_m
         if (inst[13])
             branch_cond <= inst[12:10];
         else
-            branch_cond <= ALWAYS;
+            branch_cond <= 'b111;
 
-        byte_inst <= inst[6];
+        branch_en <= (inst[15:14] == 0);
+        new_status_en <= (inst[15:12] == 4'b0100);
 
         /*
          * Determines how an immediate move operation writes back 
@@ -217,19 +219,22 @@ module instruction_decoder_unit_m
          */
         case (inst[15:10]) inside
             6'b000???:
-                reg_wb <= 'b11;
+                reg_wb_mode <= 'b11;
             6'b0100??:
-                reg_wb <= alu_wb;
+                reg_wb_mode <= alu_wb;
             6'b10????, 6'b010100:
-                reg_wb <= {~byte_inst, 1'b1};
+                reg_wb_mode <= {~byte_inst, 1'b1};
             6'b011???:
-                reg_wb <= imm_mov_wb;
+                reg_wb_mode <= imm_mov_wb;
             default:
-                reg_wb <= 'b00;
+                reg_wb_mode <= 'b00;
         endcase
     end
     
     always @ (*) begin : CONTROL_SIGNALS_DECODING
+        byte_inst <= inst[6];
+        status_wr_mode <= 4'b1111;
+
         case (inst[15:13]) inside // ALU function select control
             3'b000, 3'b011:     // Immediate move
                 alu_func <= MOV;

@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="xmakina_cpu_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="debug" />
+            <top_module name="glbl" />
+            <top_module name="xmakina_cpu_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="1387500001fs"></ZoomEndTime>
+      <Cursor1Time time="0fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="305"></NameColumnWidth>
+      <ValueColumnWidth column_width="134"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="7" />
+   <wvobject fp_name="/xmakina_cpu_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider70">
+      <obj_property name="label">Control Flow</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="group187" type="group">
+      <obj_property name="label">Control Flow</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/control_unit/fetch_done" type="logic">
+         <obj_property name="ElementShortName">fetch_done</obj_property>
+         <obj_property name="ObjectShortName">fetch_done</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/control_unit/state" type="array">
+         <obj_property name="ElementShortName">state[9:0]</obj_property>
+         <obj_property name="ObjectShortName">state[9:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_en" type="logic">
+         <obj_property name="ElementShortName">fetch_en</obj_property>
+         <obj_property name="ObjectShortName">fetch_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_done" type="logic">
+         <obj_property name="ElementShortName">fetch_done</obj_property>
+         <obj_property name="ObjectShortName">fetch_done</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/decode_en" type="logic">
+         <obj_property name="ElementShortName">decode_en</obj_property>
+         <obj_property name="ObjectShortName">decode_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/pc_fetch_wr" type="logic">
+         <obj_property name="ElementShortName">pc_fetch_wr</obj_property>
+         <obj_property name="ObjectShortName">pc_fetch_wr</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/pc_branch_wr" type="logic">
+         <obj_property name="ElementShortName">pc_branch_wr</obj_property>
+         <obj_property name="ObjectShortName">pc_branch_wr</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/status_update" type="logic">
+         <obj_property name="ElementShortName">status_update</obj_property>
+         <obj_property name="ObjectShortName">status_update</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider181">
+      <obj_property name="label">Data Flow</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="group180" type="group">
+      <obj_property name="label">Data Flow</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/program_counter/PC_reg" type="array">
+         <obj_property name="ElementShortName">PC_reg[15:0]</obj_property>
+         <obj_property name="ObjectShortName">PC_reg[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/alu_in_a" type="array">
+         <obj_property name="ElementShortName">alu_in_a[15:0]</obj_property>
+         <obj_property name="ObjectShortName">alu_in_a[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/alu_in_b" type="array">
+         <obj_property name="ElementShortName">alu_in_b[15:0]</obj_property>
+         <obj_property name="ObjectShortName">alu_in_b[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/alu_out" type="array">
+         <obj_property name="ElementShortName">alu_out[15:0]</obj_property>
+         <obj_property name="ObjectShortName">alu_out[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/file_out" type="array">
+         <obj_property name="ElementShortName">file_out[0:7][15:0]</obj_property>
+         <obj_property name="ObjectShortName">file_out[0:7][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/xmakina_cpu_tb/cpu/program_status_register/PSW_reg" type="array">
+         <obj_property name="ElementShortName">PSW_reg[15:0]</obj_property>
+         <obj_property name="ObjectShortName">PSW_reg[15:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider71">
+      <obj_property name="label">Individual components</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="group188" type="group">
+      <obj_property name="label">Components</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="group66" type="group">
+         <obj_property name="label">ALU</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/ALU/byte_op" type="logic">
+            <obj_property name="ElementShortName">byte_op</obj_property>
+            <obj_property name="ObjectShortName">byte_op</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/ALU/alu_func" type="array">
+            <obj_property name="ElementShortName">alu_func[3:0]</obj_property>
+            <obj_property name="ObjectShortName">alu_func[3:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/ALU/carry_in" type="logic">
+            <obj_property name="ElementShortName">carry_in</obj_property>
+            <obj_property name="ObjectShortName">carry_in</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/ALU/src_a" type="array">
+            <obj_property name="ElementShortName">src_a[15:0]</obj_property>
+            <obj_property name="ObjectShortName">src_a[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/ALU/src_b" type="array">
+            <obj_property name="ElementShortName">src_b[15:0]</obj_property>
+            <obj_property name="ObjectShortName">src_b[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/ALU/status" type="array">
+            <obj_property name="ElementShortName">status[3:0]</obj_property>
+            <obj_property name="ObjectShortName">status[3:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/ALU/result" type="array">
+            <obj_property name="ElementShortName">result[15:0]</obj_property>
+            <obj_property name="ObjectShortName">result[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/ALU/block_sel" type="array">
+            <obj_property name="ElementShortName">block_sel[1:0]</obj_property>
+            <obj_property name="ObjectShortName">block_sel[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/ALU/block_func" type="array">
+            <obj_property name="ElementShortName">block_func[1:0]</obj_property>
+            <obj_property name="ObjectShortName">block_func[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/ALU/block_res" type="array">
+            <obj_property name="ElementShortName">block_res[0:3][15:0]</obj_property>
+            <obj_property name="ObjectShortName">block_res[0:3][15:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group72" type="group">
+         <obj_property name="label">ALU registers</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/alu_in_a" type="array">
+            <obj_property name="ElementShortName">alu_in_a[15:0]</obj_property>
+            <obj_property name="ObjectShortName">alu_in_a[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/alu_in_b" type="array">
+            <obj_property name="ElementShortName">alu_in_b[15:0]</obj_property>
+            <obj_property name="ObjectShortName">alu_in_b[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/alu_out" type="array">
+            <obj_property name="ElementShortName">alu_out[15:0]</obj_property>
+            <obj_property name="ObjectShortName">alu_out[15:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group73" type="group">
+         <obj_property name="label">Fetch Unit</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_unit/en" type="logic">
+            <obj_property name="ElementShortName">en</obj_property>
+            <obj_property name="ObjectShortName">en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_unit/PC_in" type="array">
+            <obj_property name="ElementShortName">PC_in[15:0]</obj_property>
+            <obj_property name="ObjectShortName">PC_in[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_unit/mem_err" type="logic">
+            <obj_property name="ElementShortName">mem_err</obj_property>
+            <obj_property name="ObjectShortName">mem_err</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_unit/mem_done" type="logic">
+            <obj_property name="ElementShortName">mem_done</obj_property>
+            <obj_property name="ObjectShortName">mem_done</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_unit/mem_data" type="array">
+            <obj_property name="ElementShortName">mem_data[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_data[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_unit/mem_en" type="logic">
+            <obj_property name="ElementShortName">mem_en</obj_property>
+            <obj_property name="ObjectShortName">mem_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_unit/mem_access_size" type="logic">
+            <obj_property name="ElementShortName">mem_access_size</obj_property>
+            <obj_property name="ObjectShortName">mem_access_size</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_unit/mem_addr" type="array">
+            <obj_property name="ElementShortName">mem_addr[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_addr[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_unit/fetch_err" type="logic">
+            <obj_property name="ElementShortName">fetch_err</obj_property>
+            <obj_property name="ObjectShortName">fetch_err</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_unit/int_ret" type="logic">
+            <obj_property name="ElementShortName">int_ret</obj_property>
+            <obj_property name="ObjectShortName">int_ret</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_unit/fetch_done" type="logic">
+            <obj_property name="ElementShortName">fetch_done</obj_property>
+            <obj_property name="ObjectShortName">fetch_done</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/fetch_unit/fetch_data" type="array">
+            <obj_property name="ElementShortName">fetch_data[15:0]</obj_property>
+            <obj_property name="ObjectShortName">fetch_data[15:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group74" type="group">
+         <obj_property name="label">Program Counter</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_counter/fetch_en" type="logic">
+            <obj_property name="ElementShortName">fetch_en</obj_property>
+            <obj_property name="ObjectShortName">fetch_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_counter/branch_en" type="logic">
+            <obj_property name="ElementShortName">branch_en</obj_property>
+            <obj_property name="ObjectShortName">branch_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_counter/reg_wr_en" type="array">
+            <obj_property name="ElementShortName">reg_wr_en[1:0]</obj_property>
+            <obj_property name="ObjectShortName">reg_wr_en[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_counter/reg_in" type="array">
+            <obj_property name="ElementShortName">reg_in[15:0]</obj_property>
+            <obj_property name="ObjectShortName">reg_in[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_counter/branch_offset" type="array">
+            <obj_property name="ElementShortName">branch_offset[15:0]</obj_property>
+            <obj_property name="ObjectShortName">branch_offset[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_counter/PC_out" type="array">
+            <obj_property name="ElementShortName">PC_out[15:0]</obj_property>
+            <obj_property name="ObjectShortName">PC_out[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_counter/PC_reg" type="array">
+            <obj_property name="ElementShortName">PC_reg[15:0]</obj_property>
+            <obj_property name="ObjectShortName">PC_reg[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_counter/fetch_pc" type="array">
+            <obj_property name="ElementShortName">fetch_pc[15:0]</obj_property>
+            <obj_property name="ObjectShortName">fetch_pc[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_counter/branch_pc" type="array">
+            <obj_property name="ElementShortName">branch_pc[15:0]</obj_property>
+            <obj_property name="ObjectShortName">branch_pc[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_counter/reg_en" type="logic">
+            <obj_property name="ElementShortName">reg_en</obj_property>
+            <obj_property name="ObjectShortName">reg_en</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group75" type="group">
+         <obj_property name="label">Decoder Unit</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/en" type="logic">
+            <obj_property name="ElementShortName">en</obj_property>
+            <obj_property name="ObjectShortName">en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/inst_data" type="array">
+            <obj_property name="ElementShortName">inst_data[15:0]</obj_property>
+            <obj_property name="ObjectShortName">inst_data[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/branch_en" type="logic">
+            <obj_property name="ElementShortName">branch_en</obj_property>
+            <obj_property name="ObjectShortName">branch_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/new_status_en" type="logic">
+            <obj_property name="ElementShortName">new_status_en</obj_property>
+            <obj_property name="ObjectShortName">new_status_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/reg_wb_mode" type="array">
+            <obj_property name="ElementShortName">reg_wb_mode[1:0]</obj_property>
+            <obj_property name="ObjectShortName">reg_wb_mode[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/branch_cond" type="array">
+            <obj_property name="ElementShortName">branch_cond[2:0]</obj_property>
+            <obj_property name="ObjectShortName">branch_cond[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/macro_op" type="array">
+            <obj_property name="ElementShortName">macro_op[2:0]</obj_property>
+            <obj_property name="ObjectShortName">macro_op[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/status_wr_mode" type="array">
+            <obj_property name="ElementShortName">status_wr_mode[3:0]</obj_property>
+            <obj_property name="ObjectShortName">status_wr_mode[3:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/dst" type="array">
+            <obj_property name="ElementShortName">dst[2:0]</obj_property>
+            <obj_property name="ObjectShortName">dst[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/src_a" type="array">
+            <obj_property name="ElementShortName">src_a[2:0]</obj_property>
+            <obj_property name="ObjectShortName">src_a[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/src_b" type="array">
+            <obj_property name="ElementShortName">src_b[2:0]</obj_property>
+            <obj_property name="ObjectShortName">src_b[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/imm_val" type="array">
+            <obj_property name="ElementShortName">imm_val[15:0]</obj_property>
+            <obj_property name="ObjectShortName">imm_val[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/addr_offset" type="array">
+            <obj_property name="ElementShortName">addr_offset[15:0]</obj_property>
+            <obj_property name="ObjectShortName">addr_offset[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/branch_offset" type="array">
+            <obj_property name="ElementShortName">branch_offset[15:0]</obj_property>
+            <obj_property name="ObjectShortName">branch_offset[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/byte_inst" type="logic">
+            <obj_property name="ElementShortName">byte_inst</obj_property>
+            <obj_property name="ObjectShortName">byte_inst</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/alu_func" type="array">
+            <obj_property name="ElementShortName">alu_func[3:0]</obj_property>
+            <obj_property name="ObjectShortName">alu_func[3:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/imm_val_sel" type="logic">
+            <obj_property name="ElementShortName">imm_val_sel</obj_property>
+            <obj_property name="ObjectShortName">imm_val_sel</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/offset_sel" type="logic">
+            <obj_property name="ElementShortName">offset_sel</obj_property>
+            <obj_property name="ObjectShortName">offset_sel</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/const_sel" type="logic">
+            <obj_property name="ElementShortName">const_sel</obj_property>
+            <obj_property name="ObjectShortName">const_sel</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/mem_wr" type="logic">
+            <obj_property name="ElementShortName">mem_wr</obj_property>
+            <obj_property name="ObjectShortName">mem_wr</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/pc_wr" type="logic">
+            <obj_property name="ElementShortName">pc_wr</obj_property>
+            <obj_property name="ObjectShortName">pc_wr</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/debug_macro_op" type="array">
+            <obj_property name="ElementShortName">debug_macro_op[2:0]</obj_property>
+            <obj_property name="ObjectShortName">debug_macro_op[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/debug_alu_func" type="array">
+            <obj_property name="ElementShortName">debug_alu_func[3:0]</obj_property>
+            <obj_property name="ObjectShortName">debug_alu_func[3:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/inst" type="array">
+            <obj_property name="ElementShortName">inst[15:0]</obj_property>
+            <obj_property name="ObjectShortName">inst[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/alu_wb" type="array">
+            <obj_property name="ElementShortName">alu_wb[1:0]</obj_property>
+            <obj_property name="ObjectShortName">alu_wb[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/imm_mov_wb" type="array">
+            <obj_property name="ElementShortName">imm_mov_wb[1:0]</obj_property>
+            <obj_property name="ObjectShortName">imm_mov_wb[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/decoder_unit/alu_op_func" type="array">
+            <obj_property name="ElementShortName">alu_op_func[3:0]</obj_property>
+            <obj_property name="ObjectShortName">alu_op_func[3:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group76" type="group">
+         <obj_property name="label">Control Unit</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+      </wvobject>
+      <wvobject fp_name="group77" type="group">
+         <obj_property name="label">Register File</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/rd_size" type="logic">
+            <obj_property name="ElementShortName">rd_size</obj_property>
+            <obj_property name="ObjectShortName">rd_size</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/wr_en" type="array">
+            <obj_property name="ElementShortName">wr_en[1:0]</obj_property>
+            <obj_property name="ObjectShortName">wr_en[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/wr_addr" type="array">
+            <obj_property name="ElementShortName">wr_addr[2:0]</obj_property>
+            <obj_property name="ObjectShortName">wr_addr[2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/rd_addr" type="array">
+            <obj_property name="ElementShortName">rd_addr[0:1][2:0]</obj_property>
+            <obj_property name="ObjectShortName">rd_addr[0:1][2:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/wr_data" type="array">
+            <obj_property name="ElementShortName">wr_data[15:0]</obj_property>
+            <obj_property name="ObjectShortName">wr_data[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/PC_in" type="array">
+            <obj_property name="ElementShortName">PC_in[15:0]</obj_property>
+            <obj_property name="ObjectShortName">PC_in[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/file_out" type="array">
+            <obj_property name="ElementShortName">file_out[0:7][15:0]</obj_property>
+            <obj_property name="ObjectShortName">file_out[0:7][15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/PC_wr_en" type="array">
+            <obj_property name="ElementShortName">PC_wr_en[1:0]</obj_property>
+            <obj_property name="ObjectShortName">PC_wr_en[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/rd_data" type="array">
+            <obj_property name="ElementShortName">rd_data[0:1][15:0]</obj_property>
+            <obj_property name="ObjectShortName">rd_data[0:1][15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/PC_out" type="array">
+            <obj_property name="ElementShortName">PC_out[15:0]</obj_property>
+            <obj_property name="ObjectShortName">PC_out[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/register_l" type="array">
+            <obj_property name="ElementShortName">register_l[0:7][7:0]</obj_property>
+            <obj_property name="ObjectShortName">register_l[0:7][7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/register_h" type="array">
+            <obj_property name="ElementShortName">register_h[0:7][7:0]</obj_property>
+            <obj_property name="ObjectShortName">register_h[0:7][7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/PC_rd" type="array">
+            <obj_property name="ElementShortName">PC_rd[0:1]</obj_property>
+            <obj_property name="ObjectShortName">PC_rd[0:1]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/register_file/reg_file_out" type="array">
+            <obj_property name="ElementShortName">reg_file_out[0:1][15:0]</obj_property>
+            <obj_property name="ObjectShortName">reg_file_out[0:1][15:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group78" type="group">
+         <obj_property name="label">Program Status Word</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_status_register/status_wr" type="logic">
+            <obj_property name="ElementShortName">status_wr</obj_property>
+            <obj_property name="ObjectShortName">status_wr</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_status_register/wr_en" type="array">
+            <obj_property name="ElementShortName">wr_en[1:0]</obj_property>
+            <obj_property name="ObjectShortName">wr_en[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_status_register/wr_data" type="array">
+            <obj_property name="ElementShortName">wr_data[15:0]</obj_property>
+            <obj_property name="ObjectShortName">wr_data[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_status_register/status_in" type="array">
+            <obj_property name="ElementShortName">status_in[3:0]</obj_property>
+            <obj_property name="ObjectShortName">status_in[3:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_status_register/status_wr_mode" type="array">
+            <obj_property name="ElementShortName">status_wr_mode[3:0]</obj_property>
+            <obj_property name="ObjectShortName">status_wr_mode[3:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_status_register/PSW_out" type="array">
+            <obj_property name="ElementShortName">PSW_out[15:0]</obj_property>
+            <obj_property name="ObjectShortName">PSW_out[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/program_status_register/branch_logic" type="array">
+            <obj_property name="ElementShortName">branch_logic[7:0]</obj_property>
+            <obj_property name="ObjectShortName">branch_logic[7:0]</obj_property>
+         </wvobject>
+      </wvobject>
+      <wvobject fp_name="group79" type="group">
+         <obj_property name="label">Memory Controller</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/wr_en" type="logic">
+            <obj_property name="ElementShortName">wr_en</obj_property>
+            <obj_property name="ObjectShortName">wr_en</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/wr_size" type="logic">
+            <obj_property name="ElementShortName">wr_size</obj_property>
+            <obj_property name="ObjectShortName">wr_size</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/rd_en" type="array">
+            <obj_property name="ElementShortName">rd_en[0:1]</obj_property>
+            <obj_property name="ObjectShortName">rd_en[0:1]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/rd_size" type="array">
+            <obj_property name="ElementShortName">rd_size[0:1]</obj_property>
+            <obj_property name="ObjectShortName">rd_size[0:1]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/wr_addr" type="array">
+            <obj_property name="ElementShortName">wr_addr[15:0]</obj_property>
+            <obj_property name="ObjectShortName">wr_addr[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/wr_data" type="array">
+            <obj_property name="ElementShortName">wr_data[15:0]</obj_property>
+            <obj_property name="ObjectShortName">wr_data[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/rd_addr" type="array">
+            <obj_property name="ElementShortName">rd_addr[0:1][15:0]</obj_property>
+            <obj_property name="ObjectShortName">rd_addr[0:1][15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/mem_rd_done" type="array">
+            <obj_property name="ElementShortName">mem_rd_done[0:1]</obj_property>
+            <obj_property name="ObjectShortName">mem_rd_done[0:1]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/mem_rd_data" type="array">
+            <obj_property name="ElementShortName">mem_rd_data[0:1][15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_rd_data[0:1][15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/mem_rd_en" type="array">
+            <obj_property name="ElementShortName">mem_rd_en[0:1]</obj_property>
+            <obj_property name="ObjectShortName">mem_rd_en[0:1]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/mem_wr_en" type="array">
+            <obj_property name="ElementShortName">mem_wr_en[1:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_wr_en[1:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/mem_wr_addr" type="array">
+            <obj_property name="ElementShortName">mem_wr_addr[14:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_wr_addr[14:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/mem_rd_addr" type="array">
+            <obj_property name="ElementShortName">mem_rd_addr[0:1][14:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_rd_addr[0:1][14:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/mem_wr_data" type="array">
+            <obj_property name="ElementShortName">mem_wr_data[15:0]</obj_property>
+            <obj_property name="ObjectShortName">mem_wr_data[15:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/invalid_wr_addr" type="logic">
+            <obj_property name="ElementShortName">invalid_wr_addr</obj_property>
+            <obj_property name="ObjectShortName">invalid_wr_addr</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/invalid_rd_addr" type="array">
+            <obj_property name="ElementShortName">invalid_rd_addr[0:1]</obj_property>
+            <obj_property name="ObjectShortName">invalid_rd_addr[0:1]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/xmakina_cpu_tb/cpu/memory_controller/rd_done" type="array">
+            <obj_property name="ElementShortName">rd_done[0:1]</obj_property>
+            <obj_property name="ObjectShortName">rd_done[0:1]</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+</wave_config>

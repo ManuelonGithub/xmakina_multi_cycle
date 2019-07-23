@@ -35,7 +35,7 @@ module ALU_tb();
     reg [15:0] result;
     reg carry, zero, neg, ovf;
     
-    ALU_m ALU_test(.*);
+    ALU ALU_test(.*);
     
     initial ARRITHMETIC_TESTING: 
     begin

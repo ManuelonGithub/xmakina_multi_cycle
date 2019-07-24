@@ -19,8 +19,6 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-import debug::*;
-
 module xmakina_cpu_m
 #(
     parameter DEBUG = 0,
@@ -39,23 +37,23 @@ module xmakina_cpu_m
 );
 
     // Internal inputs to the memory controller
-    reg mem_wr_en, mem_wr_size;
-    reg[1:0] psw_wr = 0;
-    reg[15:0] mem_wr_addr, mem_wr_data;
+    reg         mem_wr_en, mem_wr_size;
+    reg[1:0]    psw_wr = 0;
+    reg[15:0]   mem_wr_addr, mem_wr_data;
 
-    reg mem_rd_en[0:1], mem_rd_size[0:1];
-    reg[15:0] mem_rd_addr[0:1];
+    reg         mem_rd_en[0:1], mem_rd_size[0:1];
+    reg[15:0]   mem_rd_addr[0:1];
     
     // internal outputs from the memory controller
     reg invalid_mem_wr_addr;
 
-    reg invalid_mem_rd_addr[0:1];
-    reg mem_rd_done[0:1];
-    reg[15:0] mem_rd_data[0:1];
+    reg         invalid_mem_rd_addr[0:1];
+    reg         mem_rd_done[0:1];
+    reg[15:0]   mem_rd_data[0:1];
 
     // Program Counter Control signals 
-    reg pc_fetch_wr, pc_branch_wr;
-    reg[1:0] pc_reg_wr;
+    reg         pc_fetch_wr, pc_branch_wr;
+    reg[1:0]    pc_reg_wr;
 
     // Program counter inputs
     reg[15:0] pc_reg_in, pc_next_fetch;
@@ -106,7 +104,7 @@ module xmakina_cpu_m
     reg[15:0] alu_src_data;
 
     // ALU input and output register control signals
-    reg alu_in_en, alu_out_en;
+    reg operand_in_en, alu_out_en;
 
     // ALU input and output registers
     reg[15:0] alu_in_a = 0, alu_in_b = 0;
@@ -119,11 +117,9 @@ module xmakina_cpu_m
     reg       status_update;
     reg[15:0] PSW_out;
 
-    // register file debug
-    reg[15:0] reg_file[0:7];
-    reg[9:0] exec_state_reg;
+    reg[15:0] store_data;
 
-    assign mem_wr_data = reg_out[1];
+    assign mem_wr_data = store_data;
     assign mem_wr_addr = alu_out;
     assign mem_wr_size = ~byte_inst;
     assign mem_rd_addr[1] = alu_out;
@@ -207,6 +203,8 @@ module xmakina_cpu_m
         .clk          (clk),
         .reset        (reset),
         .fetch_done   (fetch_done),
+        .mem_wr_done  (1),
+        .mem_rd_done  (mem_rd_done[1]),
         .reg_wb_mode  (reg_wb_mode),
         .branch_en    (branch_en),
         .new_status_en(new_status_en),
@@ -217,10 +215,12 @@ module xmakina_cpu_m
         .pc_fetch_wr  (pc_fetch_wr),
         .pc_branch_wr (pc_branch_wr),
         .decode_en    (decode_en),
-        .alu_in_en    (alu_in_en),
+        .operand_in_en(operand_in_en),
         .alu_out_en   (alu_out_en),
-        .reg_wr_en    (reg_wr_en),
-        .status_wr    (status_update)
+        .status_wr    (status_update),
+        .mem_wr_en    (mem_wr_en),
+        .mem_rd_en    (mem_rd_en[1]),
+        .reg_wr_en    (reg_wr_en)
     );
 
     register_file #(.DEBUG(DEBUG)) register_file (
@@ -280,9 +280,10 @@ module xmakina_cpu_m
     );
 
     always @ (posedge clk) begin
-        if (alu_in_en) begin
+        if (operand_in_en) begin
             alu_in_a <= reg_out[0];
             alu_in_b <= alu_src_data;
+            store_data <= reg_out[1];
         end
 
         if (alu_out_en)

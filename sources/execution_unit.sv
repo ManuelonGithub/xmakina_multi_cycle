@@ -26,9 +26,9 @@ module control_unit
     input wire clk, reset, // "External" inputs
 
     input wire      fetch_done,             // Fetch unit input
-
+    input wire      mem_wr_done, mem_rd_done,
     input wire      branch_en, new_status_en, // Decode Unit inputs
-    input wire[1:0] reg_wb_mode,              //          "
+    input wire[1:0] reg_wb_mode, mem_en,      //          "
     input wire[2:0] branch_cond, macro_op,    //          "
 
     input wire[15:0] status_reg,
@@ -36,8 +36,9 @@ module control_unit
     output reg fetch_en, // Fetch Unit control signal
     output reg pc_fetch_wr, pc_branch_wr, // PC control signals
     output reg decode_en, // Decoder Unit control signals
-    output reg alu_in_en, alu_out_en,
+    output reg operand_in_en, alu_out_en,
     output reg status_wr,
+    output reg mem_wr_en, mem_rd_en,
     output reg[1:0] reg_wr_en
 );
 
@@ -103,7 +104,7 @@ module control_unit
         pc_fetch_wr <= 0;
         pc_branch_wr <= 0;
         decode_en <= 0;
-        alu_in_en <= 0;
+        operand_in_en <= 0;
         alu_out_en <= 0;
         status_wr <= 0;
         reg_wr_en <= 0;
@@ -149,7 +150,12 @@ module control_unit
             end
             
             state[FETCH]: begin
-                state <= (1 << WAIT_FETCH);
+                if (fetch_done) begin
+                    state <= (1 << DECODE);
+
+                    pc_fetch_wr <= 1;
+                    decode_en <= 1;
+                end
 
                 fetch_en <= 0;
             end
@@ -162,7 +168,7 @@ module control_unit
                     decode_en <= 1;
                 end
                 else
-                state <= (1 << WAIT_FETCH);
+                    state <= (1 << WAIT_FETCH);
             end
             
             state[DECODE]: begin
@@ -170,7 +176,7 @@ module control_unit
 
                 pc_fetch_wr <= 0;
                 decode_en <= 0;
-                alu_in_en <= 1;
+                operand_in_en <= 1;
             end
 
             state[OPERAND_FETCH]: begin
@@ -182,7 +188,7 @@ module control_unit
                     end
                 endcase
 
-                alu_in_en <= 0;
+                operand_in_en <= 0;
                 alu_out_en <= 1;
 
                 if (branch_en)
@@ -195,13 +201,14 @@ module control_unit
             end
 
             state[EXECUTE]: begin
-                case (macro_op)
-                    LOAD, STORE: begin
+                case (1'b1)
+                    mem_en[0]: begin
                         state <= (1 << MEMORY_ACCESS);
-
-                        // Here all memory signals are outputted.
-                        // Fetch Operand state determined their values,
-                        // Here we are just outputting all.
+                        mem_rd_en <= 1;
+                    end
+                    mem_en[1]: begin
+                        state <= (1 << MEMORY_ACCESS);
+                        mem_wr_en <= 1;
                     end
                     default: begin
                         state <= (1 << WRITE_BACK);
@@ -219,9 +226,14 @@ module control_unit
             
 
             state[MEMORY_ACCESS]: begin
-                state <= (1 << FETCH);
+                mem_wr_en <= 0;
+                mem_rd_en <= 0;
 
-                reg_wr_en <= reg_wb_mode;
+                if (mem_rd_done && mem_en[1] || mem_wr_done && mem_en[0]) begin
+                    reg_wr_en <= reg_wb_mode;
+                    state <= (1 << WRITE_BACK);
+                end
+
             end
 
             state[WRITE_BACK]: begin

@@ -27,7 +27,7 @@ module instruction_decoder_unit
     input wire[15:0] inst_data,
     
     output reg branch_en, new_status_en,
-    output reg[1:0] reg_wb_mode,
+    output reg[1:0] reg_wb_mode, mem_en,
     output reg[2:0] branch_cond, macro_op,
     output reg[3:0] status_wr_mode,
 
@@ -219,7 +219,7 @@ module instruction_decoder_unit
         else
             branch_offset <= {{2{inst[12]}}, inst[12:0], 1'b0};
 
-        imm_val[7:0] = inst[10:3];
+        imm_val[7:0] <= inst[10:3];
         case (inst[12:11]) 
             MOVL:
                 imm_val[15:8] <= inst[10:3];
@@ -241,9 +241,6 @@ module instruction_decoder_unit
             branch_cond <= inst[12:10];
         else
             branch_cond <= 'b111;
-
-        branch_en <= (inst[15:14] == 0);
-        new_status_en <= (inst[15:12] == 4'b0100);
 
         /*
          * Determines how an immediate move operation writes back 
@@ -288,6 +285,11 @@ module instruction_decoder_unit
             default:
                 reg_wb_mode <= 'b00;
         endcase
+
+        branch_en <= (inst[15:14] == 0);
+        new_status_en <= (inst[15:12] == 4'b0100);
+        mem_en[0] <= (inst[15:14] == 2'b10);
+        mem_en[1] <= (inst[15:14] == 2'b11);
     end
     
     always @ (*) begin : CONTROL_SIGNALS_DECODING

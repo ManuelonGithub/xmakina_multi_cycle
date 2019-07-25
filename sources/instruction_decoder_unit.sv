@@ -28,8 +28,9 @@ module instruction_decoder_unit
     
     output reg branch_en, new_status_en,
     output reg[1:0] reg_wb_mode, mem_en,
-    output reg[2:0] branch_cond, macro_op,
+    output reg[2:0] branch_cond,
     output reg[3:0] status_wr_mode,
+    output reg[7:0] macro_op,
 
     output reg[2:0] dst, src_a, src_b,
     output reg[15:0] imm_val, addr_offset, branch_offset,
@@ -286,6 +287,7 @@ module instruction_decoder_unit
                 reg_wb_mode <= 'b00;
         endcase
 
+        // ALL of these are outdated, execution unit will take care of this.
         branch_en <= (inst[15:14] == 0);
         new_status_en <= (inst[15:12] == 4'b0100);
         mem_en[0] <= (inst[15:14] == 2'b10);
@@ -324,6 +326,7 @@ module instruction_decoder_unit
             end
         endcase
 
+        // This is outdated. The execution unnit will take care of this.
         case (inst[15:13]) inside // Write-back select control
             3'b000: begin   // Branch with link
                 mem_wr <= 0;
@@ -395,21 +398,21 @@ module instruction_decoder_unit
     always @ (*) begin : MACRO_OP_DECODING
         case (inst[15:10]) inside
             6'b000???:
-                macro_op <= BRANCH_W_LINK;
+                macro_op <= (1 << BRANCH_W_LINK);
             6'b001???:
-                macro_op <= CONDITIONAL_BRANCH;
+                macro_op <= (1 << CONDITIONAL_BRANCH);
             6'b0100??:
-                macro_op <= ALU_OPERATION;
+                macro_op <= (1 << ALU_OPERATION);
             6'b10????, 6'b010100:
-                macro_op <= LOAD;
+                macro_op <= (1 << LOAD);
             6'b11????, 6'b010101:
-                macro_op <= STORE;
+                macro_op <= (1 << STORE);
             6'b010110:
-                macro_op <= SYSTEM_CALL;
+                macro_op <= (1 << SYSTEM_CALL);
             6'b010111:
-                macro_op <= CONDITIONAL_EXEC;
+                macro_op <= (1 << CONDITIONAL_EXEC);
             6'b011???:
-                macro_op <= IMMEDIATE_MOVE;
+                macro_op <= (1 << IMMEDIATE_MOVE);
         endcase
     end 
     

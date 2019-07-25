@@ -27,9 +27,10 @@ module control_unit
 
     input wire      fetch_done,             // Fetch unit input
     input wire      mem_wr_done, mem_rd_done,
-    input wire      branch_en, new_status_en, // Decode Unit inputs
-    input wire[1:0] reg_wb_mode, mem_en,      //          "
-    input wire[2:0] branch_cond, macro_op,    //          "
+    input wire      branch_en, new_status_en,   // Decode Unit inputs
+    input wire[1:0] reg_wb_mode, mem_en,        //          "
+    input wire[2:0] branch_cond,                //          "
+    input wire[7:0] macro_op,                   //          "
 
     input wire[15:0] status_reg,
 
@@ -160,17 +161,6 @@ module control_unit
                 fetch_en <= 0;
             end
             
-            state[WAIT_FETCH]: begin
-                if (fetch_done) begin
-                    state <= (1 << DECODE);
-
-                    pc_fetch_wr <= 1;
-                    decode_en <= 1;
-                end
-                else
-                    state <= (1 << WAIT_FETCH);
-            end
-            
             state[DECODE]: begin
                 state <= (1 << OPERAND_FETCH);         
 
@@ -180,9 +170,16 @@ module control_unit
             end
 
             state[OPERAND_FETCH]: begin
-                case (macro_op)
-                    SYSTEM_CALL, CONDITIONAL_EXEC:
-                        state <= (1 << NOP_EXECUTE);
+                case (1'b1)
+                    macro_op[SYSTEM_CALL], 
+                    macro_op[CONDITIONAL_EXEC]:
+                        state <= (1 << INIT);
+
+                    macro_op[BRANCH_W_LINK], 
+                    macro_op[CONDITIONAL_BRANCH]: begin
+                        pc_branch_wr <= branch_cond_res;
+                        state <= (1 << EXECUTE);
+                    end
                     default: begin
                         state <= (1 << EXECUTE);
                     end
@@ -190,9 +187,6 @@ module control_unit
 
                 operand_in_en <= 0;
                 alu_out_en <= 1;
-
-                if (branch_en)
-                    pc_branch_wr <= branch_cond_res;
 
                 // PSW enable needs to be done here (if needed)
                 // Decode unit will probably make the decision on whether or not
@@ -202,25 +196,27 @@ module control_unit
 
             state[EXECUTE]: begin
                 case (1'b1)
-                    mem_en[0]: begin
+                    macro_op[LOAD]: begin
                         state <= (1 << MEMORY_ACCESS);
                         mem_rd_en <= 1;
                     end
-                    mem_en[1]: begin
+                    macro_op[STORE]: begin
                         state <= (1 << MEMORY_ACCESS);
                         mem_wr_en <= 1;
                     end
+                    macro_op[ALU_OPERATION]: begin
+                        state <= (1 << WRITE_BACK);
+                        status_wr <= 1;
+                        reg_wr_en <= reg_wb_mode;
+                    end
                     default: begin
                         state <= (1 << WRITE_BACK);
-
                         reg_wr_en <= reg_wb_mode;
                     end
                 endcase
 
                 alu_out_en <= 0;
                 pc_branch_wr <= 0;
-
-                status_wr <= new_status_en;
             end
 
             
@@ -229,7 +225,7 @@ module control_unit
                 mem_wr_en <= 0;
                 mem_rd_en <= 0;
 
-                if (mem_rd_done && mem_en[1] || mem_wr_done && mem_en[0]) begin
+                if (mem_rd_done && macro_op[LOAD] || mem_wr_done && macro_op[STORE]) begin
                     reg_wr_en <= reg_wb_mode;
                     state <= (1 << WRITE_BACK);
                 end

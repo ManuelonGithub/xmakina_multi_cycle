@@ -47,7 +47,8 @@ module xmakina_cpu_tb();
     
     memory_m #(
         .MEM_FILE("square_value_comp.mem"),
-        .USE_MEM_FILE(1)
+        .USE_MEM_FILE(1),
+        .MEM_TYPE    (1)
     ) mem (
         .clk(clk),
         .rd_en(mem_rd_en),

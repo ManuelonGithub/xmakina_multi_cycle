@@ -22,13 +22,16 @@
 
 module memory_m
 #(
+    parameter ACTIVE_EDGE = 0, // 0 for negedge, 1 for posedge
+
     parameter COL_WIDTH = 8,
     parameter COL_NB = 2,
     parameter MEM_DEPTH = 32768,
     parameter RD_SRC_NB = 2,
 
-    parameter MEM_FILE = "test_mem_0.mem",
-    parameter USE_MEM_FILE = 0
+    parameter MEM_FILE = "mem.mem",
+    parameter USE_MEM_FILE = 0,
+    parameter MEM_TYPE = 0 // 0 for hex format, 1 for bin format
  )
 (
     input wire clk, rd_en[0:(RD_SRC_NB-1)],
@@ -42,31 +45,46 @@ module memory_m
     reg [(COL_WIDTH*COL_NB)-1:0] memory[0:(MEM_DEPTH-1)];
     
     initial begin
-        wr_done <= 0;
-    
         for (int i = 0; i < MEM_DEPTH; i++)  begin
-            memory[i] = 'hFFFF;
+            memory[i] = 'h0000;
         end
 
-        if (USE_MEM_FILE)
-            $readmemb(MEM_FILE,memory);
+        if (USE_MEM_FILE) begin
+            if (MEM_TYPE)
+                $readmemb(MEM_FILE,memory);
+            else
+                $readmemh(MEM_FILE,memory);
+        end
         
         for (int init = 0; init < RD_SRC_NB; init = init + 1) begin
             rd_data[init] <= 'h0;
             rd_done[init] <= 'h0;
         end
     end
+
     
     generate
     genvar rd_i;
         for (rd_i = 0; rd_i < RD_SRC_NB; rd_i = rd_i + 1) begin
-            always @ (negedge clk) begin
-                if (rd_en[rd_i]) begin
-                    rd_data[rd_i] <= memory[rd_addr[rd_i]];
-                    rd_done[rd_i] <= 1;
+            if (ACTIVE_EDGE) begin
+                always @ (posedge clk) begin
+                    if (rd_en[rd_i]) begin
+                        rd_data[rd_i] <= memory[rd_addr[rd_i]];
+                        rd_done[rd_i] <= 1;
+                    end
+                    else
+                        rd_done[rd_i] <= 0;
                 end
-                else
-                    rd_done[rd_i] <= 0;
+            end
+            else begin
+                always @ (negedge clk) begin
+                    if (rd_en[rd_i]) begin
+                        rd_data[rd_i] <= memory[rd_addr[rd_i]];
+                        rd_done[rd_i] <= 1;
+                    end
+                    else
+                        rd_done[rd_i] <= 0;
+                end
             end
         end
     endgenerate
@@ -74,15 +92,29 @@ module memory_m
     generate
     genvar wr_i;
         for (wr_i = 0; wr_i < COL_NB; wr_i = wr_i + 1) begin
-            always @ (negedge clk) begin
-                if (wr_en[wr_i]) begin
-                    memory[wr_addr][((COL_WIDTH+COL_WIDTH*wr_i)-1):(COL_WIDTH*wr_i)] 
-                        <= wr_data[((COL_WIDTH+COL_WIDTH*wr_i)-1):(COL_WIDTH*wr_i)];
-                    
-                    wr_done <= 1;
+            if (ACTIVE_EDGE) begin
+                always @ (posedge clk) begin
+                    if (wr_en[wr_i]) begin
+                        memory[wr_addr][((COL_WIDTH+COL_WIDTH*wr_i)-1):(COL_WIDTH*wr_i)] 
+                            <= wr_data[((COL_WIDTH+COL_WIDTH*wr_i)-1):(COL_WIDTH*wr_i)];
+                        
+                        wr_done <= 1;
+                    end
+                    else
+                        wr_done <= 0;
                 end
-                else
-                    wr_done <= 0;
+            end
+            else begin
+                always @ (negedge clk) begin
+                    if (wr_en[wr_i]) begin
+                        memory[wr_addr][((COL_WIDTH+COL_WIDTH*wr_i)-1):(COL_WIDTH*wr_i)] 
+                            <= wr_data[((COL_WIDTH+COL_WIDTH*wr_i)-1):(COL_WIDTH*wr_i)];
+                        
+                        wr_done <= 1;
+                    end
+                    else
+                        wr_done <= 0;
+                end
             end
         end
     endgenerate

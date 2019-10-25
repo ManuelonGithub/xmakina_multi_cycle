@@ -1,5 +1,38 @@
+/**
+ * @File    X-Makina Shifter Module file.
+ * @brief   Contains the code for the X-Makina Shifter.
+ * @author  Manuel Burnay
+ * @date    2019.10.25 (created)
+ * @date    2019.10.25 (Last Modified)
+ */
 
-
+/**
+ * @brief   Barrel Shifter that can perform 
+            Shift Arrithmetic and Rotate right with Carry.
+ * @input   operation: Operation for the Shifter to compute.
+ *                     This Shifter currently only supports 2 operations.
+ *                     They can be seen in the SHIFT_OPERATIONS 
+ *                     enumeration in the module.
+ * @input   status_old: Old status bits of the machine.
+ *                      They are used to obtain the carry in bit, and to
+ *                      passthrough if a Shift operation does not effect that
+ *                      specific bit.
+ * @input   in: Shifter input.
+ * @input   shift: Shift count value. 
+ * @output  status_new: New status bits resolved by the Shifter based
+ *                      on the operation it performed and the old status.
+ * @output  out: Output result of the Shifter.
+ * @param   WORD: Specifies the size of the Shifter word in bits.
+ * @details This shifter module uses a 
+ *          single barrel shifter to perform its operations.
+ *          It uses the ">>" verilog operator, so performance of the shifter is 
+ *          Synthesizer dependent.
+ *          This module is meant to be set up so it can chain with other shifters 
+ *          for better pipeline performance and/or 
+ *          enable operations on fractions of the Word size.
+ *          To accomplish the latter, "pass" operation is implemented
+ *          so the shifter does not operate on the result and status.
+ */
 module shifter
 #(
     parameter WORD = 16
@@ -20,14 +53,6 @@ module shifter
     reg[WORD-1:0] barrel_shift_out;
     reg[(WORD*2)-1:0] barrel_shift_in;
 
-    /*
-     * 	Notes on shifting and rotating:
-     * 		This module is set up so it can chain with other shifters 
-     *		for better pipeline performance and/or 
-     *		enable operations on fractions of the Word size.
-     *		To accomplish the latter, "pass" operation is implemented
-     *		so the shifter does not operate on the result and status.
-     */
     always @ (*) 
     begin  
     	status_new <= status_old;
@@ -49,6 +74,8 @@ module shifter
 				status_new[N] <= out[WORD-1];
 				status_new[C] <= barrel_shift_in[shift-1];
             end
+
+            // Passthrough operation
             default: begin
             	barrel_shift_in <= {{WORD{in[WORD-1]}},in};;
             	out <= in;
@@ -56,4 +83,4 @@ module shifter
         endcase
     end
 
-endmodule
+endmodule : shifter

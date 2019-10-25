@@ -1,5 +1,38 @@
+/**
+ * @File    X-Makina Instruction decoder Module file.
+ * @brief   Contains the code for the X-Makina Instruction decoder.
+ * @author  Manuel Burnay
+ * @date    2019.10.25 (created)
+ * @date    2019.10.25 (Last Modified)
+ */
 
-
+/**
+ * @brief	X-Makina Multi-cycle hard-coded instruction decoder.
+ * @input  	inst: 			instruction word.
+ * @output 	opcode: 		Instruction operation code.
+ * @output 	byte_inst:		Byte Intruction variant signal.
+ * @output 	dst_reg:		Destination Register Address.
+ * @output 	src_reg:		Source Register Address.
+ * @output 	alu_wb:			Determines if an ALU operation 
+ *							should write back to the register file.
+ * @output 	update_status:	Determines if an ALU operation should update the status.
+ * @output 	Reg_or_Const:	Determines the source of the ALU's B-operand for 
+ * 							an ALU operation.
+ * @output 	ALU_op:			ALU operation control signal.
+ * @output 	branch_cond:	Branch condition control signal.
+ * @output 	branch_offset:	Branch offset data word.
+ * @output 	addr_PREPO:		Load/Store address pre/post ALU control signal.
+ * @output 	addr_DEC:		Load/Store address decrement control signal.
+ * @output 	addr_INC:		Load/Store address increment control signal.
+ * @output 	mem_offset:		Load/Store Relative memory offset data word.
+ * @output 	imm_wb:			Move-Immediate write-back mode.
+ * @output 	imm_val:		Immediate value data word.
+ * @param   WORD: Specifies the size of the instruction words in bits.
+ * @details This decoder uses hardcoded logic to retrieve relevant 
+ *			information that the control unit uses throughout its procedure.
+ *			It has a WORD parameter, but that is simply a module standard,
+ *			it has no real effect on the decoding procedure.
+ */
 module instruction_decoder
 #(
 	parameter WORD = 16

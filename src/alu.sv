@@ -1,29 +1,35 @@
 /**
- *  @File
- *      X-Makina Arrithmetic and Logic Unit.
- *  @brief
- *      Contains the code for the X-Makina Arrithmetic and Logic Unit.
- *  @author
- *      Manuel Burnay
- *  @date
- *      2019.10.25 (created)
- *  @date
- *      2019.10.25 (Last Modified)
+ * @File 	X-Makina Arrithmetic and Logic Unit.
+ * @brief 	Contains the code for the X-Makina Arrithmetic and Logic Unit.
+ * @author 	Manuel Burnay
+ * @date 	2019.10.25 (created)
+ * @date 	2019.10.25 (Last Modified)
  */
 
 /**
- *	@brief
- *		X-Makina Arrithmetic and Logic Unit.
- *	@param
- *		WORD: Specifies the size of the ALU word in bits.
- *	@details
- *		Although the ALU word size is parameterized,
- *		The ALU is pretty specific to X-Makina.
- *		The ALU has been designed with speed in mind,
- *		Which means that a lot of elements in the ALU may be duplicated so
- *		The critical path for certain operations can be shortened.
- *		The ALU is, of course, Asynchronous. Any registering of the inputs/outputs
- *		are done outside of the module.
+ * @brief 	X-Makina Arrithmetic and Logic Unit.
+ * @input 	operation: Operation for the ALU to compute.
+ *					   This ALU currently only supports 12 operations.
+ *					   They can be seen in the ALU_OPERATIONS
+ *                     enumeration in the module.
+ * @input 	status_old: Old status bits of the machine.
+ *						They are used to obtain the carry in bit, and to
+ *						passthrough if an ALU operation does not effect that
+ *						specific bit.
+ * @input 	opA: ALU operand A. The Minuend component of subtraction.
+ * @input 	opB: ALU operand B. The Subtrahend component of subtraction.
+ * @output 	status_new: New status bits resolved by the ALU based on the operation
+ *						it performed and the old status.
+ * @output 	out: Output result of the ALU.
+ * @param 	WORD: Specifies the size of the ALU word in bits.
+ * @details Although the ALU word size is parameterized,
+ *			The ALU is pretty specific to X-Makina.
+ *			The ALU has been designed with speed in mind,
+ *			Which means that a lot of elements in the ALU may be duplicated so
+ *			The critical path for certain operations can be shortened.
+ *			The ALU is, of course, Asynchronous. 
+ *			Any registering of the inputs/outputs
+ *			are done outside of the module.
  */
 module ALU
 #(
@@ -49,7 +55,7 @@ module ALU
 		BIC, BIS,
 		PASS_B, PASS_A,
         SWPB, SXT
-    } ALU_FUNCTIONS;
+    } ALU_OPERATIONS;
 
 	wire Cin = status_old[C];
 	reg Csign, Cout;
@@ -58,11 +64,13 @@ module ALU
 	 * 	Overflow detection on arrithmetic operations:
 	 *	The "XORing of the carry bits" method is implemented,
 	 *	Where the Carry out of the Most significant bit addtion is XORed 
-	 *	with the Carry out of the addtion operation in order to get the Overflow bit result.
+	 *	with the Carry out of the addtion operation in order 
+	 * to get the Overflow bit result.
 	 */
 
 	always @ (*) begin
-		status_new <= status_old; 	// Sets up the new status with the values of the old status
+		// Sets up the new status with the values of the old status
+		status_new <= status_old;
 
 		// NOR reduction of the operation result. 
 		// Will only be 1 when all bits of out are 0.

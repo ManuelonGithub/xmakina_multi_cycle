@@ -1,4 +1,9 @@
 /**
+ * @File    X-Makina Fetch Unit Module file.
+ * @brief   Contains the code for the X-Makina Fetch Unit module.
+ * @author  Manuel Burnay
+ * @date    2019.10.25 (created)
+ * @date    2019.10.26 (Last Modified)
  */
 
 

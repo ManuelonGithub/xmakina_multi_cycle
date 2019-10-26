@@ -23,7 +23,7 @@
 	output reg ROM_en,
 	output reg [WORD-1:0] ROM_addr,
 
-	output reg ready, bad_mem, exc_ret, err,
+	output reg ready, bad_addr, exc_ret, err,
 
 	output reg[WORD-1:0] inst
 );
@@ -44,7 +44,7 @@
 	end
 
 	always @ (*) begin
-		bad_mem <= |ROM_addr[$clog2(MAX_BYTES)-1:0];
+		bad_addr <= |ROM_addr[$clog2(MAX_BYTES)-1:0];
 		exc_ret <= |ROM_addr;
 		err 	<= ROM_err;
 
@@ -57,7 +57,7 @@
 				ROM_en <= 0;
 				next_state <= IDLE;
 
-				if (en && ~bad_mem) begin
+				if (en && ~bad_addr) begin
 					ready <= 0;
 					ROM_en <= 1;
 
@@ -89,6 +89,7 @@
 				if (reset) begin
 					ROM_addr <= 0;
 					inst <= 0;
+					state <= IDLE;
 				end
 				else begin
 					if (read_addr) 	ROM_addr <= addr;
@@ -105,6 +106,7 @@
 				if (reset) begin
 					ROM_addr <= 0;
 					inst <= 0;
+					state <= IDLE;
 				end
 				else begin
 					if (read_addr) 	ROM_addr <= addr;

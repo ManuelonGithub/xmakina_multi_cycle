@@ -44,11 +44,11 @@ module memory
     parameter ACTIVE_EDGE = 1,
     parameter WORD = 16,
     parameter READ_PORTS = 2,
-    parameter BYTES = (1 << 16)
+    parameter BYTES = 65536
  )
 (
     input wire clk, mem_rd[READ_PORTS], mem_wr,
-    input wire[$clog2(WORD/8)-1:0] wr_size,
+    input wire[(WORD/8)-1:0] wr_size,
     input wire[$clog2(BYTES)-1:0] wr_addr, rd_addr[READ_PORTS],
     input wire[WORD-1:0] wr_data,
 
@@ -100,7 +100,7 @@ module memory
                 /*
                  * Write Procedure.
                  * Due to memory being byte addressable
-                 * a for loop is used to address each byte of the register word.
+                 * a for loop is used to address each byte of the memory word.
                  */
                 for (wr_byte = 0; wr_byte < BYTES_IN_WORD; wr_byte = wr_byte + 1) 
                 begin

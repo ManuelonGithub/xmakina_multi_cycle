@@ -40,18 +40,22 @@
  */
 module register_file
 #(
-    parameter ACTIVE_EDGE = 1,
+    parameter EDGE = 1,
     parameter WORD = 16,
     parameter READ_PORTS = 2,
-    parameter REGISTERS = 8
+    parameter REGISTERS = 8,
+    parameter PC = 7
  )
 (
-    input wire clk, reset,
-    input wire[(WORD/8)-1:0] Reg_wr,
-    input wire[$clog2(REGISTERS)-1:0] wr_addr, rd_addr[READ_PORTS],
-    input wire[WORD-1:0] wr_data,
+    input wire                          clk_i, arst_i,
+    input wire[(WORD/8)-1:0]            wren_i,
+    input wire[$clog2(REGISTERS)-1:0]   wraddr_i, rdaddr_i[READ_PORTS],
+    input wire[WORD-1:0]                data_i,
+    output reg[WORD-1:0]                data_o[READ_PORTS],
 
-    output reg[WORD-1:0] rd_data[READ_PORTS]
+    input wire                          pcen_i,
+    input wire[WORD-1:0]                pc_i,
+    output reg[WORD-1:0]                pc_o
 );
 
     localparam BYTE = 8;
@@ -59,7 +63,7 @@ module register_file
 
     reg[WORD-1:0] R[REGISTERS]; // The registers
 
-    integer i, rd_port, wr_byte;
+    integer i, rd_port, wr_byte;    // Iteration variables
 
     initial begin
         for (i = 0; i < REGISTERS; i = i + 1) begin
@@ -67,65 +71,48 @@ module register_file
        end
     end
 
+    wire clk;
+    generate
+        if (EDGE)   assign clk = clk_i;
+        else        assign clk = ~clk_i;
+    endgenerate
+
+    wire wr_en = |wren_i;
+
     /*
      * Read procedure.
      * Register File reads are done asynchronously.
+     * For loop is used so the same code is applicable to 
+     * a parameterized amount of read ports.
      */
     always @ (*) begin
         for (rd_port = 0; rd_port < READ_PORTS; rd_port = rd_port + 1) begin
-           rd_data[rd_port] <= R[rd_addr[rd_port]];
+           data_o[rd_port] <= R[rdaddr_i[rd_port]];
        end
+
+       pc_o <= R[PC];
     end
 
-    // Write procedure is inside a generate block 
-    // so the activation clock edge can be parameterized
-    generate
-        // Parameter determined reg file is updated on a positive edge of clock
-        if (ACTIVE_EDGE) begin
-
-            /*
-             * Write Procedure.
-             * Due to memory being byte addressable
-             * a for loop is used to address each byte of the register word.
-             */
-            always @ (posedge(clk)) begin
-                for (wr_byte = 0; wr_byte < BYTES; wr_byte = wr_byte + 1) begin
-                    if (Reg_wr[wr_byte])  
-                        R[wr_addr][BYTE*wr_byte +: BYTE] <= 
-                            wr_data[BYTE*wr_byte +: BYTE];  
+    /*
+     * Write Procedure.
+     * Due to memory being byte addressable
+     * a for loop is used to address each byte of the register word.
+     */
+    always @ (posedge(clk)) begin
+        if (wr_en) begin
+            for (wr_byte = 0; wr_byte < BYTES; wr_byte = wr_byte + 1) begin
+                if (wren_i[wr_byte])  
+                    R[wraddr_i][BYTE*wr_byte +: BYTE] <= data_i[BYTE*wr_byte +: BYTE];  
                     /*
                      * This is how you must do bit ranges in verilog
                      * when one of the elements in the range 
                      * calculation isn't constant.
                      * (in this case wr_byte is the non-constant value)
                      */ 
-               end
             end
-
         end
-        // Parameter determined reg file is updated on a negative edge of clock
-        else begin
-
-            /*
-             * Write Procedure.
-             * Due to memory being byte addressable
-             * a for loop is used to address each byte of the register word.
-             */
-            always @ (negedge(clk)) begin
-                for (wr_byte = 0; wr_byte < BYTES; wr_byte = wr_byte + 1) begin
-                    if (Reg_wr[wr_byte])  
-                        R[wr_addr][BYTE*wr_byte +: BYTE] <= 
-                            wr_data[BYTE*wr_byte +: BYTE];  
-                    /*
-                     * This is how you must do bit ranges in verilog
-                     * when one of the elements in the range 
-                     * calculation isn't constant.
-                     * (in this case wr_byte is the non-constant value)
-                     */ 
-               end
-            end
-
-        end
-    endgenerate
+        else if (pcen_i)
+            R[PC] <= pc_i;
+    end
     
 endmodule : register_file

@@ -7,7 +7,6 @@ module memory_offset_select
 	parameter WORD = 16
  )
 (
-	input wire clk_i,
 	input wire[2:0] sel_i,
 	input wire[WORD-1:0] offset_i,
 

@@ -106,8 +106,6 @@ module instruction_decoder
 					2'b00: begin	// Swap, Shift or ALU instructions fall here
 						case (inst[11:8])
 							4'b1100: opcode <= SWAP;
-							4'b1101: opcode <= SHIFT;
-							4'b1101: opcode <= SHIFT;
 							default: opcode <= ALU;
 						endcase // inst[11:8]
 					end

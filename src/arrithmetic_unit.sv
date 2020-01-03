@@ -1,5 +1,8 @@
-
-
+/*
+ * file: arrithmetic_unit.sv
+ * author: Manuel Burnay
+ * date created: 2019.12.17
+ */
 
 /*
  * Arrithmetic unit

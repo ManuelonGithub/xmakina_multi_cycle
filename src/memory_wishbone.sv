@@ -54,7 +54,7 @@ module mem_wishbone
             if (sel_i[rd_byte]) 
                 dat_o[BYTE*rd_byte +: BYTE] <= mem[adr_i][BYTE*rd_byte +: BYTE]; 
             else                
-                dat_o[BYTE*rd_byte +: BYTE] <= 8'h00;
+                dat_o[BYTE*rd_byte +: BYTE] <= 8'hXX;
         end
         /*
          * Write Procedure.

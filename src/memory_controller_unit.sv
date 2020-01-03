@@ -83,6 +83,7 @@ end
 always @ (*) begin
 	we_o <= 1'b0;
 	busy_o <= 1'b0;
+	en_o <= 1'b0;
 
 	case (state)
 		IDLE: begin
@@ -93,6 +94,8 @@ always @ (*) begin
 		end
 		READ: begin
 			busy_o <= 1'b1;
+			en_o <= 1'b1;
+			
 			if (ack_i) 	next_state <= IDLE;
 			else		next_state <= READ;
 		end

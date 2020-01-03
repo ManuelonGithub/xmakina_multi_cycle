@@ -20,10 +20,11 @@
  */
 module ALU
 #(
-    parameter WORD = 16
+    parameter WORD = 16,
+    parameter BCD_EN = 0
  )
 (
-	input wire 				cin,
+	input wire 				cin, bcd,
     input wire[3:0] 		op,
     input wire[WORD-1:0] 	a, b,
     output reg[3:0] 		flags,		// C Z N V
@@ -88,12 +89,12 @@ always @ (*) begin
 	if (op[3:2] == ARRITHMETIC)	// signed Arrithmetic overflow flag logic
 		flags[V] <= arr_ovf;
 	else
-		flags[V] <= 0;
+		flags[V] <= 'bX;
 
 	case (op[3:2])				// Carry flag logic
 		ARRITHMETIC:	flags[C] <= arr_cout;
 		SHIFTER:		flags[C] <= shift_cout;
-		default:		flags[C] <= 0;
+		default:		flags[C] <= 'bX;
     endcase
 end
 

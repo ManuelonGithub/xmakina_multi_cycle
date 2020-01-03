@@ -1,11 +1,18 @@
+/*
+ * file: address_decoder.sv
+ * author: Manuel Burnay
+ * date created: 2019.12.19
+ */
 
-
-
-
+/*
+ * PC Offset Select unit.
+ * Performs the addition between the PC value 
+ * and a selected offset (b/w a default offset & an external offset).
+ */
 module PC_offset_select
 #(
 	parameter WORD = 16,
-	parameter DEF_OFFS = 16'h2
+	parameter DEF_OFFS = 16/8
  )
 (
 	input wire sel_i,

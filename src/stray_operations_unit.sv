@@ -1,6 +1,8 @@
-
-
-
+/*
+ * file: stray_operations_unit.sv
+ * author: Manuel Burnay
+ * date created: 2019.12.17
+ */
 
 /*
  * Stray operations unit
@@ -24,7 +26,7 @@ module stray_op_unit
 localparam HALF_WORD = WORD/2;
 
 // Ordering of the operations that are selected via the op signal
-enum {PASS_A, PASS_B, SWPB, SXT} STRAY_OPERATIONS;
+enum {PASS_B, SWPB, SXT, PASS_A} STRAY_OPERATIONS;
 
 // operation selection procedure
 always @ (*) begin

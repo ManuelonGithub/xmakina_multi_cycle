@@ -15,13 +15,17 @@ module status_register
     parameter PLVLS = 8
  ) 
 (
-    input wire clk_i, rst_i, 
+    input wire clk_i, arst_i, 
 
-    input wire                      clrSlp_i, setPriv,
-    input wire[(WORD/8)-1:0]        wrEn_i,
-    input wire[$clog2(PLVLS-1):0]   Priv_i,
+    input wire                      clrSlp_i, setPriv_i, WrEn_i, flagsWr_i,
+    input wire[(WORD/8)-1:0]        wrMode_i,
+    input wire[$clog2(PLVLS)-1:0]   priv_i,
     input wire[WORD-1:0]            data_i,
-    input wire[FLAGS-1:0]           flags_i, wrFlags_i,
+    input wire[FLAGS-1:0]           flags_i, flagsEn_i,
+
+    output reg                      slp_o, ie_o,
+    output reg[$clog2(PLVLS)-1:0]   prevPriv_o, currPriv_o,
+    output reg[FLAGS-1:0]           flags_o,
     output reg[WORD-1:0]            data_o
 );
 
@@ -62,66 +66,74 @@ localparam PREVP_H  = CURRP_L - 1;
 localparam PREVP_L  = (PREVP_H - (PRIVWIDTH - 1));
 
 // Individual status registers
-reg[FLAGS-1:0] flags;
-reg slp, ie;
-reg[PRIVWIDTH-1:0] prevPriv, currPriv;
+// reg[FLAGS-1:0] flags;
+// reg slp, ie;
+// reg[PRIVWIDTH-1:0] prevPriv, currPriv;
 
-wire flags_wr = |wrFlags_i;
+wire flags_wr = |flagsWr_i;
 
-integer i, wr_byte;
+integer i;
 
 initial begin
-    flags       <= 0;
-    slp         <= 0;
-    ie          <= 0;
-    prevPriv    <= 0;
-    currPriv    <= 0;
+    flags_o     <= 0;
+    slp_o       <= 0;
+    ie_o        <= 0;
+    prevPriv_o  <= 0;
+    currPriv_o  <= 0;
 end
 
 // Register writing procedure 
-always @ (posedge clk_i, posedge rst_i) begin
+always @ (posedge clk_i, posedge arst_i) begin
     // Flag bits writing procedure
-    if (rst_i) begin
-        flags       <= 0;
-        slp         <= 0;
-        ie          <= 0;
-        prevPriv    <= 0;
-        currPriv    <= 0;
+    if (arst_i) begin
+        flags_o     <= 0;
+        slp_o       <= 0;
+        ie_o        <= 0;
+        prevPriv_o  <= 0;
+        currPriv_o  <= 0;
     end
     else begin
-        if (wrEn_i[0])
-            flags <= data_i[FLAGS_H:FLAGS_L];
-        else begin	// Selecting between updating flags or updating register bytes
-            for (int i = 0; i < FLAGS; i++) begin
-                if (wrFlags_i[i]) 	flags[i] <= flags_i[i];
+        if (WrEn_i) begin
+            // Register Write Procedure
+            if (wrMode_i[0]) begin
+                flags_o <= data_i[FLAGS_H:FLAGS_L];
+                slp_o   <= data_i[SLP];
+                ie_o    <= data_i[IE];
+            end
+            if (wrMode_i[1]) begin
+                currPriv_o <= data_i[CURRP_H:CURRP_L];
+                prevPriv_o <= data_i[PREVP_H:PREVP_L];
             end
         end
+        else begin
+            // Individual Element manipulation/Write procedures
+            // Clear Sleep Enable
+            if (clrSlp_i)  slp_o <= 0;
 
-        // Sleep bit writing procedure
-        if (wrEn_i[0])      slp <= data_i[SLP];
-        else if (clrSlp_i)  slp <= 0;
+            // Flags Write
+            if (flagsWr_i) begin
+                for (i = 0; i < FLAGS; i++) begin
+                    if (flagsEn_i[i])   flags_o[i] <= flags_i[i];
+                end
+            end
 
-        // Interrupt Enable writing procedure
-        if (wrEn_i[0])      ie <= data_i[IE];
-
-        // Current Priviledge Level writing procedure
-        if (wrEn_i[0])      currPriv <= data_i[CURRP_H:CURRP_L];
-        else if (setPriv)   currPriv <= Priv_i;
-
-        // Previous Priviledge Level writing procedure
-        if (wrEn_i[1])      prevPriv <= data_i[PREVP_H:PREVP_L];
-        else if (setPriv)   prevPriv <= currPriv;
+            // Setting Priviledge
+            if (setPriv_i) begin
+                currPriv_o <= priv_i;
+                prevPriv_o <= currPriv_o;
+            end
+        end
     end
 end
 
 // Register output procedure
 always @ (*) begin
     data_o <= 0;
-    data_o[CURRP_H:CURRP_L] <= currPriv;
-    data_o[PREVP_H:PREVP_L] <= prevPriv;
-    data_o[IE]              <= ie;
-    data_o[SLP]             <= slp;
-    data_o[FLAGS_H:FLAGS_L] <= flags;
+    data_o[CURRP_H:CURRP_L] <= currPriv_o;
+    data_o[PREVP_H:PREVP_L] <= prevPriv_o;
+    data_o[IE]              <= ie_o;
+    data_o[SLP]             <= slp_o;
+    data_o[FLAGS_H:FLAGS_L] <= flags_o;
 end
 
 endmodule

@@ -1,6 +1,8 @@
-
-
-
+/*
+ * file: shifter_unit.sv
+ * author: Manuel Burnay
+ * date created: 2019.12.17
+ */
 
 /*
  * Stray operations unit

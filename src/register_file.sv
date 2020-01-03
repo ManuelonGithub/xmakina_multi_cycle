@@ -40,22 +40,19 @@
  */
 module register_file
 #(
-    parameter EDGE = 1,
     parameter WORD = 16,
     parameter READ_PORTS = 2,
     parameter REGISTERS = 8,
     parameter PC = 7
  )
 (
-    input wire                          clk_i, arst_i,
-    input wire[(WORD/8)-1:0]            wren_i,
-    input wire[$clog2(REGISTERS)-1:0]   wraddr_i, rdaddr_i[READ_PORTS],
-    input wire[WORD-1:0]                data_i,
-    output reg[WORD-1:0]                data_o[READ_PORTS],
+    input wire clk_i, arst_i,
 
-    input wire                          pcen_i,
-    input wire[WORD-1:0]                pc_i,
-    output reg[WORD-1:0]                pc_o
+    input wire                          wrEn_i, pcEn_i,
+    input wire[(WORD/8)-1:0]            wrMode_i,
+    input wire[$clog2(REGISTERS)-1:0]   wrAddr_i, rdAddr_i[READ_PORTS],
+    input wire[WORD-1:0]                data_i, pc_i,
+    output reg[WORD-1:0]                pc_o, data_o[READ_PORTS]
 );
 
     localparam BYTE = 8;
@@ -71,14 +68,6 @@ module register_file
        end
     end
 
-    wire clk;
-    generate
-        if (EDGE)   assign clk = clk_i;
-        else        assign clk = ~clk_i;
-    endgenerate
-
-    wire wr_en = |wren_i;
-
     /*
      * Read procedure.
      * Register File reads are done asynchronously.
@@ -87,7 +76,7 @@ module register_file
      */
     always @ (*) begin
         for (rd_port = 0; rd_port < READ_PORTS; rd_port = rd_port + 1) begin
-           data_o[rd_port] <= R[rdaddr_i[rd_port]];
+           data_o[rd_port] <= R[rdAddr_i[rd_port]];
        end
 
        pc_o <= R[PC];
@@ -98,11 +87,11 @@ module register_file
      * Due to memory being byte addressable
      * a for loop is used to address each byte of the register word.
      */
-    always @ (posedge(clk)) begin
-        if (wr_en) begin
+    always @ (posedge(clk_i)) begin
+        if (wrEn_i) begin
             for (wr_byte = 0; wr_byte < BYTES; wr_byte = wr_byte + 1) begin
-                if (wren_i[wr_byte])  
-                    R[wraddr_i][BYTE*wr_byte +: BYTE] <= data_i[BYTE*wr_byte +: BYTE];  
+                if (wrMode_i[wr_byte])  
+                    R[wrAddr_i][BYTE*wr_byte +: BYTE] <= data_i[BYTE*wr_byte +: BYTE];  
                     /*
                      * This is how you must do bit ranges in verilog
                      * when one of the elements in the range 
@@ -111,7 +100,7 @@ module register_file
                      */ 
             end
         end
-        else if (pcen_i)
+        else if (pcEn_i)
             R[PC] <= pc_i;
     end
     

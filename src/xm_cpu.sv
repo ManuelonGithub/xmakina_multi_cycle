@@ -83,39 +83,27 @@ xm_control_plane control (
 
 // CPU Datapath
 xm_datapath datapath (
-	.clk_i          (clk_i),
-	.arst_i         (arst_i),
-	.pcWr_i         (pcWr),
-	.regWr_i        (regWr),
-	.tempWr_i       (tempWr),
-	.byteOp_i       (byteOp),
-	.regWrMode_i    (regWrMode),
-	.regWrAdr_i     (regWrAdr),
-	.regAdrA_i      (regAdrA),
-	.regAdrB_i      (regAdrB),
-	.aluBRegSel_i   (aluBRegSel),
-	.aluBConstSel_i (aluBConstSel),
-	.aluBOffsetSel_i(aluBOffsetSel),
-	.aluOp_i        (aluOp),
-	.pcSel_i        (pcSel),
-	.adrPcSel_i     (adrPcSel),
-	.adrAluSel_i    (adrAluSel),
-	.adrBaseSel_i   (adrBaseSel),
-	.regAluSel_i    (regAluSel),
-	.regAddrSel_i   (regAddrSel),
-	.regMemSel_i    (regMemSel),
-	.regTempSel_i   (regTempSel),
-	.regPcSel_i     (regPcSel),
-	.regImmSel_i    (regImmSel),
-	.mem_i          (memData),
-	.branchOffs_i   (branchOffs),
-	.memOffs_i      (memOffs),
-	.immVal_i       (immVal),
-	.addr_o         (dataAdr),
-	.mem_o          (dataOut)
+	.clk_i      (clk_i),
+	.arst_i     (arst_i),
+	.pcWr_i     (pcWr_i),
+	.regWr_i    (regWr_i),
+	.memEn_i    (memEn_i),
+	.memWr_i    (memWr_i),
+	.irWr_i     (irWr_i),
+	.byteOp_i   (byteOp_i),
+	.regWrMode_i(regWrMode_i),
+	.regWrAdr_i (regWrAdr_i),
+	.regAdrA_i  (regAdrA_i),
+	.regAdrB_i  (regAdrB_i),
+	.mem_i      (mem_i),
+	.badMem_o   (badMem),
+	.pswAddr_o  (pswAddr),
+	.datSel_o   (datSel),
+	.mem_o      (mem_o)
 );
 
 // Memory Controller
+
 
 // Internal Bus arbriter (for Status Register)
 

@@ -48,18 +48,20 @@ module memory_controller_unit
 	input wire 	clk_i, rst_i, 
 
 	// internal signals
-	input wire 				en_i,
-	input wire[2:0]			cmd_i,
-	input wire[WORD-1:0]	addr_i, data_i,
-	output reg				busy_o, en_o,
-	output reg[WORD-1:0]	data_o,
+	input wire 					en_i,
+	input wire[2:0]				cmd_i,
+	input wire[WORD-(WORD/8):0] addr_i,
+	input wire[WORD-1:0]		data_i,
+	output reg					busy_o, en_o,
+	output reg[WORD-1:0]		data_o,
 
 	// Bus signals
-	input wire 				ack_i,
-	input wire[WORD-1:0]	dat_i,
-	output reg 				we_o, stb_o, cyc_o,
-	output reg[1:0]         sel_o,
-	output reg[WORD-1:0]	adr_o, dat_o
+	input wire 					ack_i,
+	input wire[WORD-1:0]		dat_i,
+	output reg 					we_o, stb_o, cyc_o,
+	output reg[1:0]         	sel_o,
+	output reg[WORD-(WORD/8):0]	adr_o,
+	output reg[WORD-1:0]		dat_o
 );
 
 localparam HALF_WORD = WORD/2;

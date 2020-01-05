@@ -17,29 +17,30 @@ module address_decoder
 	parameter PSW_ADDR = 16'hFFFC
  )
 (
-	input wire byteAccess_i,
+	input wire byteEn_i,
 	input wire[WORD-1:0] addr_i,
-	output reg excRet_o, badMem_o, pswAddr_o,
-	output reg[1:0] param_o
+	output reg badMem_o, pswAddr_o,
+	output reg[1:0] datSel_o,
+	output reg[WORD-(WORD/8):0] addr_o
 );
 
 enum {ACC_BAD, ACC_LB, ACC_HB, ACC_WORD} ACCESS_PARAMETERS;
 
 always @ (*) begin
-	// Exception return value check
-	excRet_o <= (addr_i == EXC_RET);
-	badMem_o <= ~byteAccess_i & addr_i[0];
+	badMem_o <= ~byteEn_i & addr_i[0];
 
 	// PSW access check
 	pswAddr_o <= (addr_i == PSW_ADDR);
 
 	// Address "Byte Lane" Decoding
-	case ({byteAccess_i, addr_i[0]})
-		2'b00:	param_o <= ACC_WORD;	// Both lanes enabled
-		2'b01:	param_o <= ACC_BAD; 	// Both lanes disabled
-		2'b10:	param_o <= ACC_LB;		// Low-byte lane enabled
-		2'b11:	param_o <= ACC_HB;		// High-byte lane enabled
+	case ({byteEn_i, addr_i[0]})
+		2'b00:	datSel_o 	<= ACC_WORD;	// Both lanes enabled
+		2'b01:	datSel_o 	<= ACC_BAD; 	// Both lanes disabled
+		2'b10:	datSel_o 	<= ACC_LB;		// Low-byte lane enabled
+		2'b11:	datSel_o	<= ACC_HB;		// High-byte lane enabled
 	endcase
+
+	addr_o <= addr_i[WORD-1:(WORD/8)-1];
 end
 
 endmodule

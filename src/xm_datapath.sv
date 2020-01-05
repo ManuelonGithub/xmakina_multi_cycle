@@ -32,13 +32,13 @@ module xm_datapath
 	input wire[2:0] regWrAdr_i, regAdrA_i, regAdrB_i,
 
 	// Input data signals
-	input wire[WORD-1:0] mem_i,
+	input wire[WORD-1:0] mem_i, branchOffs_i,
 
 	output reg badMem_o, pswAddr_o,
 	output reg[1:0] datSel_o,
 	// Memory and Instruction output signals
-	output reg[WORD-(WORD/8):0] addr_o
-	output reg[WORD-1:0] mem_o
+	output reg[WORD-(WORD/8):0] mar_o,
+	output reg[WORD-1:0] omdr_o, ir_o
 );
 
 reg[WORD-1:0] 	regWB, pcNew, pcOffset;	// Register File internal data inputs
@@ -66,32 +66,32 @@ PC_offset_select pcOffsetSelect (
 	.pc_i    (pc),
 	.pc_o    (pcNew)
 );
+reg[WORD-(WORD/8):0] mar;
+
+reg[WORD-1:0] imdr = 0;
 
 address_decoder addressDecoder (
-	.byteEn_i (byteEn_i),
-	.addr_i   (mar),
+	.byteEn_i (byteOp_i),
+	.addr_i   (marIn),
 	.badMem_o (badMem_o),
 	.pswAddr_o(pswAddr_o),
 	.datSel_o (datSel_o),
-	.addr_o   (addr_o)
+	.addr_o   (mar)
 );
-
-reg[WORD-1:0] mar = 0, omdr = 0, imdr = 0, ir = 0;
 
 always @ (*) begin
 	marIn <= pc;
-
-	
+	regWB <= pc;
 end
 
 always @ (posedge clk_i) begin
 	if (memEn_i) begin
-		mar 	<= marIn;
-		omdr 	<= regB;
+		mar_o 	<= mar;
+		omdr_o 	<= regB;
 	end
 
 	if (memWr_i) begin
-		if (irWr_i)	ir 		<= mem_i;
+		if (irWr_i)	ir_o 	<= mem_i;
 		else		imdr 	<= mem_i;
 	end
 end

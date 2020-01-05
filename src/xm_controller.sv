@@ -25,10 +25,10 @@ module xm_controller
 
 	output reg pcWr_o, regWr_o, memEn_o, irWr_o,
 
-	output reg byteOp_o,
+	output reg byteOp_o, memRW_o, pcSel_o, 
 
 	output reg[1:0]	regWrMode_o,
-	output reg[2:0] regWrAdr_o, regAdrA_o, regAdrB_o,
+	output reg[2:0] regWrAdr_o, regAdrA_o, regAdrB_o
 );
 
 enum {
@@ -39,7 +39,12 @@ enum {
 	FETCH_WAIT, EXC_CHECK, EXC_ENTRY, EXC_RETURN
 } STATES;
 
-reg[4:0] state = FETCH, next_state;
+reg[4:0] state, next_state;
+
+initial begin
+    state = EXC_CHECK;
+    next_state = 0;
+end
 
 always @ (*) begin
 	pcWr_o 			<= 0;
@@ -56,24 +61,19 @@ always @ (*) begin
 
 	case (state)
 		FETCH: begin
-			if (memBusy_i) begin
-				next_state <= FETCH_WAIT;
-			end
-			else begin
-				next_state	<= DECODE;
-				pcWr_o 		<= 1;
-				memEn_o 	<= 1;
-			end
+            next_state	<= DECODE;
 
-			adrPcSel_o	<= 1;
+//			adrPcSel_o	<= 1;
 			memRW_o 	<= 0;
+			pcWr_o 		<= 1;
+            memEn_o     <= 1;
 		end
 
 		DECODE: begin
 			if (memBusy_i)	next_state <= DECODE;
 			else 			next_state <= instOp_i;
 
-			decEn_o <= 1;
+			irWr_o <= 1;
 		end
 
 		COND_BRANCH: begin
@@ -90,7 +90,7 @@ always @ (*) begin
 			pcWr_o 		<= 1;
 
 			regWrAdr_o	<= LR;
-			regPcSel_o 	<= 1;
+//			regPcSel_o 	<= 1;
 			regWr_o 	<= 1;
 			regWrMode_o	<= 2'b11;
 		end

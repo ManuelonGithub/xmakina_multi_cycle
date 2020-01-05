@@ -48,16 +48,18 @@ module memory_controller_unit
 	input wire 	clk_i, rst_i, 
 
 	// internal signals
-	input wire 					en_i,
-	input wire[2:0]				cmd_i,
+	input wire 					en_i, rw_i,
+	input wire[1:0]				sel_i,
 	input wire[WORD-(WORD/8):0] addr_i,
 	input wire[WORD-1:0]		data_i,
+
 	output reg					busy_o, en_o,
 	output reg[WORD-1:0]		data_o,
 
 	// Bus signals
 	input wire 					ack_i,
 	input wire[WORD-1:0]		dat_i,
+	
 	output reg 					we_o, stb_o, cyc_o,
 	output reg[1:0]         	sel_o,
 	output reg[WORD-(WORD/8):0]	adr_o,
@@ -75,13 +77,6 @@ reg[1:0] state = IDLE, next_state;
 assign stb_o = cyc_o;
 assign cyc_o = busy_o;
 
-initial begin
-    data_o <= 0;
-    busy_o <= 0;
-    adr_o <= 0;
-    dat_o <= 0;
-end
-
 always @ (*) begin
 	we_o <= 1'b0;
 	busy_o <= 1'b0;
@@ -90,9 +85,9 @@ always @ (*) begin
 	case (state)
 		IDLE: begin
 			if (en_i) begin
-				if (cmd_i[RW]) 	next_state <= WRITE;
-				else			next_state <= READ;
-			end else			next_state <= IDLE; 
+				if (rw_i)	next_state <= WRITE;
+				else		next_state <= READ;
+			end else		next_state <= IDLE; 
 		end
 		READ: begin
 			busy_o <= 1'b1;
@@ -115,7 +110,7 @@ end
 always @ (*) begin
     adr_o <= addr_i;
     dat_o <= data_i;
-    sel_o <= cmd_i[1:0];
+    sel_o <= sel_i;
     
     case (sel_o)
         2'b01:      data_o <= {{WORD/2{1'b0}}, dat_i[WORD/2-1:0]};

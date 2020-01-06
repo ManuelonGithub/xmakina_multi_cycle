@@ -19,9 +19,9 @@ module status_register
 
     input wire                      clrSlp_i, setPriv_i, WrEn_i, flagsWr_i,
     input wire[(WORD/8)-1:0]        wrMode_i,
+    input wire[FLAGS-1:0]           flags_i, flagsEn_i,
     input wire[$clog2(PLVLS)-1:0]   priv_i,
     input wire[WORD-1:0]            data_i,
-    input wire[FLAGS-1:0]           flags_i, flagsEn_i,
 
     output reg                      slp_o, ie_o,
     output reg[$clog2(PLVLS)-1:0]   prevPriv_o, currPriv_o,

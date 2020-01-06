@@ -18,16 +18,14 @@ module xm_datapath
 	// System inputs
 	input wire clk_i, arst_i, 
 
-	// Synchronous Control signals 
-	// these signals are what the controller directly handles
-
-	// Register file synchrnous control signals
-	input wire pcWr_i, regWr_i, memEn_i, memWr_i, irWr_i,
+	// synchrnous control signals
+	input wire pcWr_i, regWr_i, memEn_i, memWr_i, irWr_i, statWr_i, flagsWr_i,
 
 	// General operation control signals
 	input wire byteOp_i, pcSel_i,
-
 	input wire[1:0] aluBSel_i,
+
+	input wire[1:0] statWrMode_i,
 
 	// Register File operation control signals
 	input wire[1:0]	regWrMode_i,
@@ -35,6 +33,7 @@ module xm_datapath
 	input wire[2:0] regWrAdr_i, regAdrA_i, regAdrB_i,
     
     input wire[3:0] aluOp_i,
+    input wire[3:0] flagsEn_i,
     
 	// Input data signals
 	input wire[WORD-1:0] mem_i, branchOffs_i,
@@ -43,7 +42,7 @@ module xm_datapath
 	output reg[1:0] datSel_o,
 	// Memory and Instruction output signals
 	output reg[WORD-(WORD/8):0] mar_o,
-	output reg[WORD-1:0] omdr_o, ir_o
+	output reg[WORD-1:0] omdr_o, ir_o, status_o
 );
 
 enum {ALU_WR, PC_WR, MEM_WR, IMM_WR, TEMP_WR} REG_WRITE_SEL;
@@ -58,6 +57,8 @@ reg[WORD-(WORD/8):0] addr;
 
 reg[WORD-1:0] aluA, aluB, aluOut;
 reg[WORD-1:0] mar, imdr;
+
+reg[3:0] aluFlags, flags;
 
 register_file registerFile (
 	.clk_i   (clk_i),
@@ -94,13 +95,29 @@ constant_table constantTable (
 );
 
 ALU alu (
-    .cin(0), 
+    .cin(flags[0]), 
     .bcd(0),
     .op(aluOp_i),
     .a(aluA), 
     .b(aluB),
-//    .flags(0),
+   .flags(aluFlags),
     .res(aluOut)
+);
+
+status_register StatusRegister (
+	.clk_i     (clk_i),
+	.arst_i    (arst_i),
+	.clrSlp_i  (0),
+	.setPriv_i (0),
+	.WrEn_i    (StatWr_i),
+	.flagsWr_i (flagsWr_i),
+	.wrMode_i  (statWrMode_i),
+	.flagsEn_i (flagsEn_i),
+	.flags_i   (aluFlags),
+	.priv_i    (0),
+	.data_i    (data_i),
+	.flags_o   (flags),
+	.data_o    (status_o)
 );
 
 always @ (*) begin

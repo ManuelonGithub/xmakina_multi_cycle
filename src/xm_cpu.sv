@@ -21,7 +21,7 @@ module xm_cpu
 );
 
 reg 		memBusy, memWr;
-reg 		pcWr, regWr, irWr;
+reg 		pcWr, regWr, irWr, statWr, flagsWr;
 reg 		memEn, memRW;
 reg 		byteOp;
 reg 		pcSel;
@@ -30,9 +30,9 @@ reg[1:0]	regWrMode;
 reg[2:0]    regWrSel;
 reg[2:0] 	regWrAdr, regAdrA, regAdrB;
 reg[3:0]	aluOp;
-
+reg[3:0]	flagsEn;
 reg[14:0]   mar;
-reg[15:0]	omdr, ir;
+reg[15:0]	omdr, ir, status;
 reg[15:0] 	memData, branchOffs;
 
 reg         badMem, pswAddr;
@@ -43,7 +43,7 @@ xm_control_plane control (
 	.arst_i      (arst_i),
 	.memBusy_i   (memBusy),
 	.inst_i      (ir),
-	.status_i    (0),
+	.status_i    (status),
 	.pcWr_o      (pcWr),
 	.regWr_o     (regWr),
 	.irWr_o      (irWr),
@@ -70,15 +70,19 @@ xm_datapath datapath (
 	.memEn_i     (memEn),
 	.memWr_i     (memWr),
 	.irWr_i      (irWr),
+	.StatWr_i    (statWr),
+	.flagsWr_i   (flagsWr),
 	.byteOp_i    (byteOp),
 	.pcSel_i     (pcSel),
 	.aluBSel_i   (aluBSel),
+	.statWrMode_i(statWrMode),
 	.regWrMode_i (regWrMode),
 	.regWrSel_i  (regWrSel),
 	.regWrAdr_i  (regWrAdr),
 	.regAdrA_i   (regAdrA),
 	.regAdrB_i   (regAdrB),
 	.aluOp_i     (aluOp),
+	.flagsEn_i   (flagsEn),
 	.mem_i       (memData),
 	.branchOffs_i(branchOffs),
 	.badMem_o    (badMem),
@@ -86,7 +90,8 @@ xm_datapath datapath (
 	.datSel_o    (datSel),
 	.mar_o       (mar),
 	.omdr_o      (omdr),
-	.ir_o        (ir)
+	.ir_o        (ir),
+	.status_o    (status)
 );
 
 // Memory Controller

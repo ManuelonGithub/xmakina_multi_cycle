@@ -13,9 +13,6 @@ module xm_controller
 
 	input wire memBusy_i,
 
-	// input wire[3:0] flags_i,
-	// input wire[WORD-1:0] inst_i,
-
 	input wire byteOp_i, constSel_i, branchRes_i, bcdEn_i,
 	input wire[1:0] aluWrMode_i, immWrMode_i, memWrMode_i,
 	input wire[2:0] regAdrA_i, regAdrB_i,
@@ -23,7 +20,7 @@ module xm_controller
 	input wire[WORD-1:0] immVal_i, condOffset_i, jumpOffset_i,
 	input wire[WORD-1:0] accOffset_i, relOffset_i,
 
-	output reg pcWr_o, regWr_o, memEn_o, irWr_o,
+	output reg pcWr_o, regWr_o, memEn_o, irWr_o, flagsWr_o,
 
 	output reg byteOp_o, memRW_o, pcSel_o, 
 
@@ -33,6 +30,7 @@ module xm_controller
 	output reg[2:0] regWrAdr_o, regAdrA_o, regAdrB_o,
 	
 	output reg[3:0] aluOp_o,
+	output reg[3:0] flagsEn_o,
 	
 	output reg[WORD-1:0] branchOffs_o
 );
@@ -60,6 +58,7 @@ always @ (*) begin
 	pcWr_o 			<= 0;
 	regWr_o 		<= 0;
 	irWr_o 			<= 0;
+	flagsWr_o 		<= 0;
 	memEn_o 		<= 0;
 	memRW_o 		<= 0;
 	byteOp_o 		<= 0;
@@ -71,6 +70,7 @@ always @ (*) begin
 	regAdrA_o		<= regAdrA_i;
 	regAdrB_o		<= regAdrB_i;
 	aluOp_o         <= aluOp_i;
+	flagsEn_o		<= flagsEn_i;
 	branchOffs_o    <= jumpOffset_i;
 
 	case (state)

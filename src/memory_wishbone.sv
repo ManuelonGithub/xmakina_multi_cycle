@@ -2,6 +2,7 @@
 
 module mem_wishbone
 #(
+    parameter INIT_FILE = "",
     parameter EDGE = 0,
     parameter WORD = 16,
     parameter BYTES = 65536
@@ -38,11 +39,19 @@ module mem_wishbone
     endgenerate
 
     // Memory contents initialization 
-    initial begin
-        for (i = 0; i < MEM_WORDS; i = i + 1) begin
-           mem[i] <= 0;
-       end
-    end
+    generate
+        if (INIT_FILE != "") begin
+            initial 
+                $readmemh(INIT_FILE, mem);
+        end
+        else begin
+            initial begin
+                for (i = 0; i < MEM_WORDS; i = i + 1) begin
+                   mem[i] <= 0;
+               end
+            end
+        end
+    endgenerate 
     
     always @ (posedge clk) begin
         /*

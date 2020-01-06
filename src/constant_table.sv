@@ -19,7 +19,7 @@ module constant_table
 );
 	
 	// Constant table ROM
-    reg [WORD-1:0] ConstantTable[7:0] = {-1, 48, 32, 8, 4, 2, 1, 0};
+    reg [WORD-1:0] ConstantTable[7:0] = {-1, 32, 16,  8, 4, 2, 1, 0};
     
     assign data_o = ConstantTable[addr_i];
 endmodule

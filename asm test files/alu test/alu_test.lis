@@ -1,0 +1,41 @@
+X-Makina Assembler - Version 2.0 (X April 2019)
+.ASM file: alu_test.asm
+Time of execution: Mon Jan  6 02:49:27 2020
+
+
+  1	    	     	
+  2	    	     	
+  3	    	     			
+  4	    	     			
+  5	    	     			org		$0
+  6	0000	0007			BL		PROG
+  7	    	     			
+  8	    	     			org 	$10
+  9	    	     	PROG	
+ 10	0010	40B0			add		#32,R0
+ 11	0012	42B9			sub 	#-1,R1
+ 12	0014	4B8B			mov		#1,R3
+ 13	0016	4F03			SWPB	R3
+ 14	0018	4E03			RRC 	R3
+ 15	001A	4F83			SXT		R3
+ 16	001C	4AAB			BIS		#16,R3
+ 17	001E	4D03			SRA		R3
+ 18	0020	45BC			CMP		#-1,R4
+ 19	0022	3FF6			BRA		PROG
+ 20	    	     			
+Successful completion of assembly
+
+** Symbol table **
+Name                               	Type	Value	Decimal
+PROG                               	LBL	0010	16
+R7                                 	REG	0007	7
+R6                                 	REG	0006	6
+R5                                 	REG	0005	5
+R4                                 	REG	0004	4
+R3                                 	REG	0003	3
+R2                                 	REG	0002	2
+R1                                 	REG	0001	1
+R0                                 	REG	0000	0
+
+.XME file: C:\Users\Manuel\Desktop\xmakina_multi_cycle\asm test files\alu test\alu_test.xme
+

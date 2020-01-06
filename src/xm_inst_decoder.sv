@@ -189,8 +189,8 @@ end
 localparam COND_OFFS_H 	= 9;
 localparam BL_OFFS_H 	= 12;
 
-localparam COND_SXT = WORD - 1 - COND_OFFS_H;
-localparam BL_SXT  	= WORD - 1 - BL_OFFS_H;
+localparam COND_SXT = WORD - 1 - COND_OFFS_H - 1;
+localparam BL_SXT  	= WORD - 1 - BL_OFFS_H - 1;
 
 localparam COND_H = 12;
 localparam COND_L = 10;
@@ -201,8 +201,8 @@ wire branchType = inst[13];
 wire[2:0] cond 	= inst[COND_H:COND_L];
 
 always @ (*) begin
-	condOffset_o <= {{COND_SXT{inst[COND_OFFS_H]}}, inst[COND_OFFS_H:0]};
-	jumpOffset_o <= {{BL_SXT{inst[BL_OFFS_H]}}, inst[BL_OFFS_H:0]};
+	condOffset_o <= {{COND_SXT{inst[COND_OFFS_H]}}, inst[COND_OFFS_H:0], 1'b0};
+	jumpOffset_o <= {{BL_SXT{inst[BL_OFFS_H]}}, inst[BL_OFFS_H:0], 1'b0};
 
     case (cond)
     	BEQ:	branchRes_o <= flags_i[Z];

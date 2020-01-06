@@ -20,8 +20,7 @@ module address_decoder
 	input wire byteEn_i,
 	input wire[WORD-1:0] addr_i,
 	output reg badMem_o, pswAddr_o,
-	output reg[1:0] datSel_o,
-	output reg[WORD-(WORD/8):0] addr_o
+	output reg[1:0] datSel_o
 );
 
 enum {ACC_BAD, ACC_LB, ACC_HB, ACC_WORD} ACCESS_PARAMETERS;
@@ -39,8 +38,6 @@ always @ (*) begin
 		2'b10:	datSel_o 	<= ACC_LB;		// Low-byte lane enabled
 		2'b11:	datSel_o	<= ACC_HB;		// High-byte lane enabled
 	endcase
-
-	addr_o <= addr_i[WORD-1:(WORD/8)-1];
 end
 
 endmodule

@@ -24,13 +24,16 @@ reg 		memBusy, memWr;
 reg 		pcWr, regWr, irWr;
 reg 		memEn, memRW;
 reg 		byteOp;
-reg[1:0]	regWrMode;
-reg[2:0] 	regWrAdr, regAdrA, regAdrB;
 reg 		pcSel;
-reg[15:0] 	memData, branchOffs;
+reg[1:0] 	aluBSel;
+reg[1:0]	regWrMode;
+reg[2:0]    regWrSel;
+reg[2:0] 	regWrAdr, regAdrA, regAdrB;
+reg[3:0]	aluOp;
 
 reg[14:0]   mar;
 reg[15:0]	omdr, ir;
+reg[15:0] 	memData, branchOffs;
 
 reg         badMem, pswAddr;
 reg[1:0]    datSel;
@@ -47,11 +50,14 @@ xm_control_plane control (
 	.memEn_o     (memEn),
 	.memRW_o     (memRW),
 	.byteOp_o    (byteOp),
+	.pcSel_o     (pcSel),
+	.aluBSel_o   (aluBSel),
 	.regWrMode_o (regWrMode),
+	.regWrSel_o  (regWrSel),
 	.regWrAdr_o  (regWrAdr),
 	.regAdrA_o   (regAdrA),
 	.regAdrB_o   (regAdrB),
-	.pcSel_o     (pcSel),
+	.aluOp_o     (aluOp),
 	.branchOffs_o(branchOffs)
 );
 
@@ -66,10 +72,13 @@ xm_datapath datapath (
 	.irWr_i      (irWr),
 	.byteOp_i    (byteOp),
 	.pcSel_i     (pcSel),
+	.aluBSel_i   (aluBSel),
 	.regWrMode_i (regWrMode),
+	.regWrSel_i  (regWrSel),
 	.regWrAdr_i  (regWrAdr),
 	.regAdrA_i   (regAdrA),
 	.regAdrB_i   (regAdrB),
+	.aluOp_i     (aluOp),
 	.mem_i       (memData),
 	.branchOffs_i(branchOffs),
 	.badMem_o    (badMem),

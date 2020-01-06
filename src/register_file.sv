@@ -100,7 +100,7 @@ module register_file
                      */ 
             end
         end
-        else if (pcEn_i)
+        if (pcEn_i)
             R[PC] <= pc_i;
     end
     

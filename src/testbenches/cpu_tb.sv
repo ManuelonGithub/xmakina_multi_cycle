@@ -10,9 +10,7 @@ reg[1:0] sel;
 reg[14:0] adr;
 reg[15:0] memDat, cpuDat;
 
-xm_cpu cpu
-
- (
+xm_cpu cpu (
     .clk_i(clk),
     .arst_i(rst),
     .ack_i(memAck),
@@ -25,8 +23,7 @@ xm_cpu cpu
     .dat_o(cpuDat)
 );
 
-mem_wishbone
- mem (
+mem_wishbone #(.INIT_FILE("alu_test.mem")) mem (
     .clk_i(clk), 
     .rst_i(rst),
     .we_i(we), 

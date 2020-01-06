@@ -27,8 +27,14 @@ module xm_controller
 
 	output reg byteOp_o, memRW_o, pcSel_o, 
 
+	output reg[1:0]	aluBSel_o,
 	output reg[1:0]	regWrMode_o,
-	output reg[2:0] regWrAdr_o, regAdrA_o, regAdrB_o
+	output reg[2:0] regWrSel_o,
+	output reg[2:0] regWrAdr_o, regAdrA_o, regAdrB_o,
+	
+	output reg[3:0] aluOp_o,
+	
+	output reg[WORD-1:0] branchOffs_o
 );
 
 enum {
@@ -38,6 +44,10 @@ enum {
 	BREAK, MEM_CONFIRM, MEM_WRITEBACK, SWAP_2, 
 	FETCH_WAIT, EXC_CHECK, EXC_ENTRY, EXC_RETURN
 } STATES;
+
+enum {REGB_SEL, CONST_SEL, MEM_OFFS_SEL} ALU_B_SEL;
+enum {ALU_WR, PC_WR, MEM_WR, IMM_WR, TEMP_WR} REG_WRITE_SEL;
+
 
 reg[4:0] state, next_state;
 
@@ -51,19 +61,22 @@ always @ (*) begin
 	regWr_o 		<= 0;
 	irWr_o 			<= 0;
 	memEn_o 		<= 0;
-	memRW_o 		<= 1'bX;
+	memRW_o 		<= 0;
 	byteOp_o 		<= 0;
-	regWrMode_o	 	<= 2'bXX;
+	pcSel_o 		<= 0;
+	regWrSel_o      <= ALU_WR;
+	aluBSel_o		<= REGB_SEL;
+	regWrMode_o	 	<= aluWrMode_i;
 	regWrAdr_o		<= regAdrA_i;
 	regAdrA_o		<= regAdrA_i;
 	regAdrB_o		<= regAdrB_i;
-	pcSel_o 		<= 0;
+	aluOp_o         <= aluOp_i;
+	branchOffs_o    <= jumpOffset_i;
 
 	case (state)
 		FETCH: begin
             next_state	<= DECODE;
 
-//			adrPcSel_o	<= 1;
 			memRW_o 	<= 0;
 			pcWr_o 		<= 1;
             memEn_o     <= 1;
@@ -78,21 +91,37 @@ always @ (*) begin
 
 		COND_BRANCH: begin
 			next_state <= FETCH;
-
-			pcSel_o <= 1;
-			if (branchRes_i)	pcWr_o <= 1;
+			
+            branchOffs_o 	<= condOffset_i;
+			pcSel_o 		<= 1;
+			if (branchRes_i)	
+				pcWr_o 		<= 1;
 		end
 
 		LINK_BRANCH: begin
 			next_state 	<= FETCH;
-
+            
+            branchOffs_o <= jumpOffset_i;
 			pcSel_o 	<= 1;
 			pcWr_o 		<= 1;
-
 			regWrAdr_o	<= LR;
-//			regPcSel_o 	<= 1;
 			regWr_o 	<= 1;
 			regWrMode_o	<= 2'b11;
+			regWrSel_o  <= PC_WR;
+		end
+		
+		ALU: begin
+            next_state 	<= FETCH;
+            
+            byteOp_o <= byteOp_i;
+            regWr_o  <= 1;
+
+            if (constSel_i)
+            	aluBSel_o <= CONST_SEL;
+            // else
+            // 	aluBSel_o <= REGB_SEL;
+            // regWrSel_o <= ALU_WR;
+            // regWrMode_o <= aluWrMode_i;
 		end
 
 		default: begin

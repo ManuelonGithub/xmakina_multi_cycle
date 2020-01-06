@@ -16,21 +16,21 @@ module xm_control_plane
 	input wire[WORD-1:0] inst_i, status_i,
 
 	// Register file synchrnous control signals
-	output reg pcWr_o, regWr_o,
-
-	output reg irWr_o, 
+	output reg pcWr_o, regWr_o, irWr_o, 
 
 	output reg memEn_o, memRW_o,
 
 	// General operation control signals
-	output reg byteOp_o,
+	output reg byteOp_o, pcSel_o,
 
+	output reg[1:0]	aluBSel_o,
+	
 	// Register File operation control signals
 	output reg[1:0]	regWrMode_o,
+	output reg[2:0] regWrSel_o,
 	output reg[2:0] regWrAdr_o, regAdrA_o, regAdrB_o,
 
-	// PC offset selecion signal
-	output reg pcSel_o,
+	output reg[3:0] aluOp_o,
 
 	output reg[15:0] branchOffs_o
 );
@@ -97,12 +97,14 @@ xm_controller #(.WORD(WORD), .LR(LR), .PC(PC)) controller (
 	.byteOp_o    (byteOp_o),
 	.memRW_o     (memRW_o),
 	.pcSel_o     (pcSel_o),
+	.aluBSel_o   (aluBSel_o),
 	.regWrMode_o (regWrMode_o),
+	.regWrSel_o  (regWrSel_o),
 	.regWrAdr_o  (regWrAdr_o),
 	.regAdrA_o   (regAdrA_o),
-	.regAdrB_o   (regAdrB_o)
+	.regAdrB_o   (regAdrB_o),
+	.aluOp_o     (aluOp_o),
+	.branchOffs_o(branchOffs_o)
 );
-
-assign branchOffs_o = 0;
 
 endmodule

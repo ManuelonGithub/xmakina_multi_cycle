@@ -48,12 +48,12 @@ module memory_controller_unit
 	input wire 	clk_i, rst_i, 
 
 	// internal signals
-	input wire 					en_i, rw_i,
+	input wire 					en_i, rw_i, pswAddr_i,
 	input wire[1:0]				sel_i,
 	input wire[WORD-(WORD/8):0] addr_i,
-	input wire[WORD-1:0]		data_i,
+	input wire[WORD-1:0]		data_i, psw_i,
 
-	output reg					busy_o, en_o,
+	output reg					busy_o, en_o, pswWr_o,
 	output reg[WORD-1:0]		data_o,
 
 	// Bus signals
@@ -74,6 +74,8 @@ enum {IDLE, READ, WRITE} CYCLE_STATES;
 
 reg[1:0] state = IDLE, next_state;
 
+reg[WORD-1:0] memData;
+
 assign stb_o = cyc_o;
 assign cyc_o = busy_o;
 
@@ -93,15 +95,19 @@ always @ (*) begin
 			busy_o <= 1'b1;
 			en_o <= 1'b1;
 			
-			if (ack_i) 	next_state <= IDLE;
-			else		next_state <= READ;
+			if (ack_i || pswAddr_i) 	
+				next_state <= IDLE;
+			else		
+				next_state <= READ;
 		end
 		WRITE: begin
 			busy_o <= 1'b1;
 			we_o <= 1'b1;
 
-			if (ack_i) 	next_state <= IDLE;
-			else		next_state <= WRITE;
+			if (ack_i || pswAddr_i) 
+				next_state <= IDLE;
+			else		
+				next_state <= WRITE;
 		end
 		default : next_state <= IDLE;
 	endcase
@@ -111,11 +117,18 @@ always @ (*) begin
     adr_o <= addr_i;
     dat_o <= data_i;
     sel_o <= sel_i;
+
+    pswWr_o <= pswAddr_i & we_o;
+
+    if (pswAddr_i)
+    	memData <= psw_i;
+    else
+    	memData <= dat_i;
     
     case (sel_o)
-        2'b01:      data_o <= {{WORD/2{1'b0}}, dat_i[WORD/2-1:0]};
-        2'b10:      data_o <= {data_i[WORD-1:WORD/2], {WORD/2{1'b0}}};
-        default:    data_o <= dat_i;
+        2'b01:      data_o <= {{WORD/2{1'b0}}, memData[WORD/2-1:0]};
+        2'b10:      data_o <= {memData[WORD-1:WORD/2], {WORD/2{1'b0}}};
+        default:    data_o <= memData;
     endcase
 end
 

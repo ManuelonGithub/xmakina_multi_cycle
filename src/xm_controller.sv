@@ -184,6 +184,29 @@ always @ (*) begin
 			regWrMode_o 	<= 2'b11;
 		end
 
+		REL_LOAD: begin
+			next_state 	<= MEM_WRITEBACK;
+
+			memEn_o 		<= 1;
+			memRW_o 		<= 0;
+			byteOp_o 		<= byteOp_i;
+			memOffs_o		<= relOffset_i;
+			adrSel_o		<= OFFSET_ADDR;
+			aluBSel_o 		<= MEM_OFFS_SEL;
+			regAdrA_o 		<= regAdrB_i;
+		end
+
+		REL_STORE: begin
+			next_state 	<= MEM_CONFIRM;
+
+			memEn_o 		<= 1;
+			memRW_o 		<= 0;
+			byteOp_o 		<= byteOp_i;
+			memOffs_o		<= relOffset_i;
+			adrSel_o		<= OFFSET_ADDR;
+			aluBSel_o 		<= MEM_OFFS_SEL;
+		end
+
 		MEM_CONFIRM: begin
 			if (memBusy_i)
 				next_state <= MEM_CONFIRM;

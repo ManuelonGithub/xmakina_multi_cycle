@@ -17,7 +17,7 @@ module status_register
 (
     input wire clk_i, arst_i, 
 
-    input wire                      clrSlp_i, setPriv_i, WrEn_i, flagsWr_i,
+    input wire                      clrSlp_i, setPriv_i, wrEn_i, flagsWr_i,
     input wire[(WORD/8)-1:0]        wrMode_i,
     input wire[FLAGS-1:0]           flags_i, flagsEn_i,
     input wire[$clog2(PLVLS)-1:0]   priv_i,
@@ -93,7 +93,7 @@ always @ (posedge clk_i, posedge arst_i) begin
         currPriv_o  <= 0;
     end
     else begin
-        if (WrEn_i) begin
+        if (wrEn_i) begin
             // Register Write Procedure
             if (wrMode_i[0]) begin
                 flags_o <= data_i[FLAGS_H:FLAGS_L];

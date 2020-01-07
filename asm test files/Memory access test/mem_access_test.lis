@@ -1,0 +1,48 @@
+X-Makina Assembler - Version 2.0 (X April 2019)
+.ASM file: mem_access_test.asm
+Time of execution: Tue Jan  7 02:39:53 2020
+
+
+  1	    	     	
+  2	    	     	
+  3	    	     	
+  4	    	     	
+  5	    	     			org		$0
+  6	0000	0007			BL		PROG
+  7	    	     			
+  8	    	     			org 	$10
+  9	    	     	PROG	
+ 10	0010	69A0			MOVLZ	$1234,R0
+ 11	0012	7890			MOVH	$1234,R0
+ 12	    	     			
+ 13	0014	6821			MOVLZ	$04,R1
+ 14	    	     			
+ 15	0016	5401			ST		R0,R1
+ 16	0018	5689			ST		R1,+R1
+ 17	001A	5689			ST		R1,+R1
+ 18	001C	5689			ST		R1,+R1
+ 19	    	     			
+ 20	001E	6822			MOVLZ	$04,R2
+ 21	    	     			
+ 22	0020	5093			LD		R2+,R3
+ 23	0022	5093			LD		R2+,R3
+ 24	0024	5093			LD		R2+,R3
+ 25	    	     			
+ 26	0026	3FFF	LOOP	BRA		LOOP
+Successful completion of assembly
+
+** Symbol table **
+Name                               	Type	Value	Decimal
+LOOP                               	LBL	0026	38
+PROG                               	LBL	0010	16
+R7                                 	REG	0007	7
+R6                                 	REG	0006	6
+R5                                 	REG	0005	5
+R4                                 	REG	0004	4
+R3                                 	REG	0003	3
+R2                                 	REG	0002	2
+R1                                 	REG	0001	1
+R0                                 	REG	0000	0
+
+.XME file: C:\Users\Manuel\Desktop\xmakina_multi_cycle\asm test files\Memory access test\mem_access_test.xme
+

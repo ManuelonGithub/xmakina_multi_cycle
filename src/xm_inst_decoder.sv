@@ -14,13 +14,13 @@ module xm_inst_decoder
 	input wire[3:0] flags_i,
 	input wire[WORD-1:0] inst_i,
 
-	output reg byteOp_o, constSel_o, branchRes_o, bcdEn_o,
+	output reg byteOp_o, constSel_o, branchRes_o, bcdEn_o, postAcc_o,
 	output reg[1:0]	aluWrMode_o, immWrMode_o, memWrMode_o,
 	output reg[2:0] regAdrA_o, regAdrB_o,
 	output reg[3:0] aluOp_o, flagsEn_o,
 	output reg[4:0] instOp_o,
 
-	output reg[WORD-1:0] immVal_o, condOffset_o, jumpOffset_o, 
+	output reg[WORD-1:0] immVal_o, condOffset_o, linkOffset_o, 
 	output reg[WORD-1:0] accOffset_o, relOffset_o
 );
 
@@ -202,7 +202,7 @@ wire[2:0] cond 	= inst[COND_H:COND_L];
 
 always @ (*) begin
 	condOffset_o <= {{COND_SXT{inst[COND_OFFS_H]}}, inst[COND_OFFS_H:0], 1'b0};
-	jumpOffset_o <= {{BL_SXT{inst[BL_OFFS_H]}}, inst[BL_OFFS_H:0], 1'b0};
+	linkOffset_o <= {{BL_SXT{inst[BL_OFFS_H]}}, inst[BL_OFFS_H:0], 1'b0};
 
     case (cond)
     	BEQ:	branchRes_o <= flags_i[Z];
@@ -339,6 +339,8 @@ localparam MEM_SXT = WORD - 1 - (MEM_OFFS_H - MEM_OFFS_L);
 localparam ACC_H = 8;
 localparam ACC_L = 6;
 
+localparam PRPO  = 9;
+
 localparam NO_INC 	= 3'b00?;
 localparam INC_2 	= 3'b010;
 localparam INC_1 	= 3'b011;
@@ -351,6 +353,7 @@ wire[2:0] accMode = inst[ACC_H:ACC_L];
 always @ (*) begin
 	relOffset_o <= {{MEM_SXT{inst[MEM_OFFS_H]}},inst[MEM_OFFS_H:MEM_OFFS_L]};
 	memWrMode_o <= {~byteOp_o, 1'b1};
+	postAcc_o 	<= inst[PRPO];
 
 	casez(accMode)
 		NO_INC:		accOffset_o <= 16'h0;

@@ -23,7 +23,7 @@ xm_cpu cpu (
     .dat_o(cpuDat)
 );
 
-mem_wishbone #(.INIT_FILE("alu_test.mem")) mem (
+mem_wishbone #(.INIT_FILE("mem_access_test.mem")) mem (
     .clk_i(clk), 
     .rst_i(rst),
     .we_i(we), 

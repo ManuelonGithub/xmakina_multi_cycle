@@ -89,12 +89,12 @@ always @ (*) begin
 	if (op[3:2] == ARRITHMETIC)	// signed Arrithmetic overflow flag logic
 		flags[V] <= arr_ovf;
 	else
-		flags[V] <= 'bX;
+		flags[V] <= 'b0;
 
 	case (op[3:2])				// Carry flag logic
 		ARRITHMETIC:	flags[C] <= arr_cout;
 		SHIFTER:		flags[C] <= shift_cout;
-		default:		flags[C] <= 'bX;
+		default:		flags[C] <= 'b0;
     endcase
 end
 

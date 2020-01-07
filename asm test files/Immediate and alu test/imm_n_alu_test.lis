@@ -1,0 +1,54 @@
+X-Makina Assembler - Version 2.0 (X April 2019)
+.ASM file: imm_n_alu_test.asm
+Time of execution: Mon Jan  6 22:50:13 2020
+
+
+  1	    	     	
+  2	    	     	
+  3	    	     	
+  4	    	     	
+  5	    	     			org		$0
+  6	0000	0007			BL		PROG
+  7	    	     		
+  8	    	     	COUNTER	
+  9	0002	6818			MOVLZ	$03,R0
+ 10	0004	4288			SUB		#1,R0
+ 11	0006	4580			CMP		#0,R0
+ 12	0008	27FC			BNE		COUNTER
+ 13	000A	3FFF	LOOP	BRA		LOOP
+ 14	    	     			
+ 15	    	     			org 	$10
+ 16	    	     	PROG	
+ 17	0010	6D50			MOVLZ	$AAAA,R0
+ 18	0012	7D50			MOVH	$AAAA,R0
+ 19	0014	4D00			SRA		R0
+ 20	    	     			
+ 21	0016	77F9			MOVLS	$FF,R1
+ 22	0018	400A			ADD		R1,R2
+ 23	    	     			
+ 24	001A	6D53			MOVLZ	$AAAA,R3
+ 25	001C	7D53			MOVH	$AAAA,R3
+ 26	    	     			
+ 27	001E	46BB			XOR		#-1,R3
+ 28	    	     			
+ 29	0020	450A			CMP		R1,R2
+ 30	    	     			
+ 31	0022	23EF			BEQ		COUNTER
+Successful completion of assembly
+
+** Symbol table **
+Name                               	Type	Value	Decimal
+LOOP                               	LBL	000A	10
+COUNTER                            	LBL	0002	2
+PROG                               	LBL	0010	16
+R7                                 	REG	0007	7
+R6                                 	REG	0006	6
+R5                                 	REG	0005	5
+R4                                 	REG	0004	4
+R3                                 	REG	0003	3
+R2                                 	REG	0002	2
+R1                                 	REG	0001	1
+R0                                 	REG	0000	0
+
+.XME file: C:\Users\Manuel\Desktop\xmakina_multi_cycle\asm test files\Immediate and alu test\imm_n_alu_test.xme
+

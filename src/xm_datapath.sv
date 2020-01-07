@@ -115,7 +115,7 @@ status_register StatusRegister (
 	.flagsEn_i (flagsEn_i),
 	.flags_i   (aluFlags),
 	.priv_i    (0),
-	.data_i    (data_i),
+	.data_i    (omdr_o),
 	.flags_o   (flags),
 	.data_o    (status_o)
 );

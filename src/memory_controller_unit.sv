@@ -76,6 +76,8 @@ reg[1:0] state = IDLE, next_state;
 
 reg[WORD-1:0] memData;
 
+reg statSel;
+
 assign stb_o = cyc_o;
 assign cyc_o = busy_o;
 
@@ -95,7 +97,7 @@ always @ (*) begin
 			busy_o <= 1'b1;
 			en_o <= 1'b1;
 			
-			if (ack_i || pswAddr_i) 	
+			if (ack_i || statSel) 	
 				next_state <= IDLE;
 			else		
 				next_state <= READ;
@@ -104,7 +106,7 @@ always @ (*) begin
 			busy_o <= 1'b1;
 			we_o <= 1'b1;
 
-			if (ack_i || pswAddr_i) 
+			if (ack_i || statSel) 
 				next_state <= IDLE;
 			else		
 				next_state <= WRITE;
@@ -116,11 +118,10 @@ end
 always @ (*) begin
     adr_o <= addr_i;
     dat_o <= data_i;
-    sel_o <= sel_i;
 
-    pswWr_o <= pswAddr_i & we_o;
+    pswWr_o <= statSel & we_o;
 
-    if (pswAddr_i)
+    if (statSel)
     	memData <= psw_i;
     else
     	memData <= dat_i;
@@ -135,6 +136,11 @@ end
 always @ (posedge clk_i) begin
 	if (rst_i)	state <= IDLE;
 	else		state <= next_state;
+
+	if (~busy_o) begin
+		sel_o <= sel_i;
+		statSel <= pswAddr_i;
+	end
 end
 
  

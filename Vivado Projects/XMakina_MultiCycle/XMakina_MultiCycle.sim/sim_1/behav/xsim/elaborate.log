@@ -1,0 +1,52 @@
+Vivado Simulator 2018.2
+Copyright 1986-1999, 2001-2018 Xilinx, Inc. All Rights Reserved.
+Running: D:/Vivado/Vivado/2018.2/bin/unwrapped/win64.o/xelab.exe -wto 582ae935ce204d5d825f183dd9c9796e --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot cpu_tb_behav xil_defaultlib.cpu_tb xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+WARNING: [VRFC 10-278] actual bit length 5 differs from formal bit length 4 for port instOp_i [C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_control_plane.sv:89]
+WARNING: [VRFC 10-278] actual bit length 32 differs from formal bit length 1 for port bcd [C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_datapath.sv:99]
+WARNING: [VRFC 10-278] actual bit length 32 differs from formal bit length 1 for port clrSlp_i [C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_datapath.sv:110]
+WARNING: [VRFC 10-278] actual bit length 32 differs from formal bit length 1 for port setPriv_i [C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_datapath.sv:111]
+WARNING: [VRFC 10-278] actual bit length 32 differs from formal bit length 3 for port priv_i [C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_datapath.sv:117]
+WARNING: [VRFC 10-278] actual bit length 1 differs from formal bit length 16 for port data_i [C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_datapath.sv:118]
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_cpu.sv" Line 5. Module xm_cpu doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_control_plane.sv" Line 5. Module xm_control_plane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_inst_decoder.sv" Line 7. Module xm_inst_decoder_default doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_controller.sv" Line 5. Module xm_controller doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_datapath.sv" Line 13. Module xm_datapath doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/register_file.sv" Line 41. Module register_file_default doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/PC_offset_select.sv" Line 12. Module PC_offset_select doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/address_decoder.sv" Line 13. Module address_decoder doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/constant_table.sv" Line 12. Module constant_table doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/alu.sv" Line 21. Module ALU doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/arrithmetic_unit.sv" Line 17. Module arrithmetic_unit doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/logic_unit.sv" Line 15. Module logic_unit doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/shifter_unit.sv" Line 16. Module shifter_unit doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/stray_operations_unit.sv" Line 16. Module stray_op_unit_default doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/status_register.sv" Line 11. Module status_register_default doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/memory_controller_unit.sv" Line 42. Module memory_controller_unit_default doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/memory_wishbone.sv" Line 3. Module mem_wishbone(INIT_FILE="mem_access_test.mem") doesn't have a timescale but at least one module in design has a timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.xm_inst_decoder_default
+Compiling module xil_defaultlib.xm_controller
+Compiling module xil_defaultlib.xm_control_plane
+Compiling module xil_defaultlib.register_file_default
+Compiling module xil_defaultlib.PC_offset_select
+Compiling module xil_defaultlib.address_decoder
+Compiling module xil_defaultlib.constant_table
+Compiling module xil_defaultlib.arrithmetic_unit
+Compiling module xil_defaultlib.logic_unit
+Compiling module xil_defaultlib.shifter_unit
+Compiling module xil_defaultlib.stray_op_unit_default
+Compiling module xil_defaultlib.ALU
+Compiling module xil_defaultlib.status_register_default
+Compiling module xil_defaultlib.xm_datapath
+Compiling module xil_defaultlib.memory_controller_unit_default
+Compiling module xil_defaultlib.xm_cpu
+Compiling module xil_defaultlib.mem_wishbone(INIT_FILE="mem_acce...
+Compiling module xil_defaultlib.cpu_tb
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot cpu_tb_behav

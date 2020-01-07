@@ -1,0 +1,23 @@
+0.6
+2018.2
+Jun 14 2018
+20:41:02
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/Vivado Projects/XMakina_MultiCycle/XMakina_MultiCycle.sim/sim_1/behav/xsim/glbl.v,1578346320,verilog,,,,glbl,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/PC_offset_select.sv,1578201577,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/address_decoder.sv,,PC_offset_select,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/address_decoder.sv,1578289879,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/alu.sv,,address_decoder,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/alu.sv,1578348415,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/arrithmetic_unit.sv,,ALU,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/arrithmetic_unit.sv,1578201577,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/constant_table.sv,,arrithmetic_unit,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/constant_table.sv,1578294220,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/logic_unit.sv,,constant_table,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/logic_unit.sv,1578201577,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/memory_controller_unit.sv,,logic_unit,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/memory_controller_unit.sv,1578211342,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/memory_wishbone.sv,,memory_controller_unit,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/memory_wishbone.sv,1578260521,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/register_file.sv,,mem_wishbone,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/register_file.sv,1578274549,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/shifter_unit.sv,,register_file,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/shifter_unit.sv,1578201577,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/status_register.sv,,shifter_unit,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/status_register.sv,1578347518,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/stray_operations_unit.sv,,status_register,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/stray_operations_unit.sv,1578201577,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_control_plane.sv,,stray_op_unit,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/testbenches/cpu_tb.sv,1578259779,systemVerilog,,,,cpu_tb,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_control_plane.sv,1578418726,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_controller.sv,,xm_control_plane,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_controller.sv,1578380199,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_cpu.sv,,xm_controller,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_cpu.sv,1578377690,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_datapath.sv,,xm_cpu,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_datapath.sv,1578379386,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_inst_decoder.sv,,xm_datapath,,,,,,,,
+C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_inst_decoder.sv,1578375442,systemVerilog,,C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/testbenches/cpu_tb.sv,,xm_inst_decoder,,,,,,,,

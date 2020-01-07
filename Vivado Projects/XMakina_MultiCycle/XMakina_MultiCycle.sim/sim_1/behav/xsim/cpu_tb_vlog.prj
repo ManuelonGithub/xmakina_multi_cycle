@@ -1,0 +1,26 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  \
+"../../../../../../src/PC_offset_select.sv" \
+"../../../../../../src/address_decoder.sv" \
+"../../../../../../src/alu.sv" \
+"../../../../../../src/arrithmetic_unit.sv" \
+"../../../../../../src/constant_table.sv" \
+"../../../../../../src/logic_unit.sv" \
+"../../../../../../src/memory_controller_unit.sv" \
+"../../../../../../src/memory_wishbone.sv" \
+"../../../../../../src/register_file.sv" \
+"../../../../../../src/shifter_unit.sv" \
+"../../../../../../src/status_register.sv" \
+"../../../../../../src/stray_operations_unit.sv" \
+"../../../../../../src/xm_control_plane.sv" \
+"../../../../../../src/xm_controller.sv" \
+"../../../../../../src/xm_cpu.sv" \
+"../../../../../../src/xm_datapath.sv" \
+"../../../../../../src/xm_inst_decoder.sv" \
+"../../../../../../src/testbenches/cpu_tb.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

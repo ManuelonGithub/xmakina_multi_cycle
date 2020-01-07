@@ -1,0 +1,57 @@
+X-Makina Assembler - Version 2.0 (X April 2019)
+.ASM file: rel_access_test.asm
+Time of execution: Tue Jan  7 15:30:31 2020
+
+
+  1	    	     	
+  2	    	     	
+  3	    	     	
+  4	    	     	
+  5	    	     	org		$0
+  6	0000	0007			BL		PROG
+  7	    	     			
+  8	    	     			org 	$10
+  9	    	     	PROG	
+ 10	0010	6240			MOVL	'H',R0
+ 11	0012	4F00			SWPB	R0
+ 12	0014	6228			MOVL	'E',R0
+ 13	    	     			
+ 14	0016	6801			MOVLZ	$0,R1
+ 15	0018	C201			STR		R0,R1,$4
+ 16	    	     			
+ 17	001A	6260			MOVL	'L',R0
+ 18	001C	4F00			SWPB	R0
+ 19	001E	6260			MOVL	'L',R0
+ 20	    	     			
+ 21	0020	C301			STR		R0,R1,$6
+ 22	    	     			
+ 23	0022	6278			MOVL	'O',R0
+ 24	0024	4F00			SWPB	R0
+ 25	0026	6108			MOVL	'!',R0
+ 26	    	     			
+ 27	0028	C401			STR		R0,R1,$8
+ 28	    	     			
+ 29	002A	77F8			MOVLS	$FF,R0
+ 30	002C	BE82			LDR		R0,#-3,R2
+ 31	    	     			
+ 32	002E	FE80			STR		R0,R0,#-3
+ 33	    	     			
+ 34	    	     			
+ 35	0030	3FFF	LOOP	BRA		LOOP
+Successful completion of assembly
+
+** Symbol table **
+Name                               	Type	Value	Decimal
+LOOP                               	LBL	0030	48
+PROG                               	LBL	0010	16
+R7                                 	REG	0007	7
+R6                                 	REG	0006	6
+R5                                 	REG	0005	5
+R4                                 	REG	0004	4
+R3                                 	REG	0003	3
+R2                                 	REG	0002	2
+R1                                 	REG	0001	1
+R0                                 	REG	0000	0
+
+.XME file: C:\Users\Manuel\Desktop\xmakina_multi_cycle\asm test files\relative access test\rel_access_test.xme
+

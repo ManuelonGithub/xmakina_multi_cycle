@@ -1,0 +1,37 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/PC_offset_select.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module PC_offset_select
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/address_decoder.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module address_decoder
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/alu.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module ALU
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/arrithmetic_unit.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module arrithmetic_unit
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/constant_table.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module constant_table
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/logic_unit.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module logic_unit
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/memory_controller_unit.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module memory_controller_unit
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/memory_wishbone.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mem_wishbone
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/register_file.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module register_file
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/shifter_unit.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module shifter_unit
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/status_register.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module status_register
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/stray_operations_unit.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module stray_op_unit
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_control_plane.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module xm_control_plane
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_controller.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module xm_controller
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_cpu.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module xm_cpu
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_datapath.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module xm_datapath
+INFO: [VRFC 10-2458] undeclared symbol data_i, assumed default net type wire [C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_datapath.sv:118]
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/xm_inst_decoder.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module xm_inst_decoder
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/Manuel/Desktop/xmakina_multi_cycle/src/testbenches/cpu_tb.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cpu_tb

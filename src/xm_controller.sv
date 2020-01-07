@@ -200,7 +200,7 @@ always @ (*) begin
 			next_state 	<= MEM_CONFIRM;
 
 			memEn_o 		<= 1;
-			memRW_o 		<= 0;
+			memRW_o 		<= 1;
 			byteOp_o 		<= byteOp_i;
 			memOffs_o		<= relOffset_i;
 			adrSel_o		<= OFFSET_ADDR;

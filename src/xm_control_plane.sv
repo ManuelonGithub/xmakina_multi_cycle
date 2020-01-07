@@ -39,7 +39,7 @@ module xm_control_plane
 localparam FLAGS_L  = 0;
 localparam FLAGS_H  = 3;
 
-reg IbyteOp, IconstSel, IbranchRes, IbcdEn, IpostAcc;
+reg IbyteOp, IconstSel, IbranchRes, IbcdEn, IpreAcc;
 reg[1:0] IaluWrMode, IimmWrMode, ImemWrMode;
 reg[2:0] IregAdrA, IregAdrB;
 reg[3:0] IaluOp, IflagsEn;
@@ -54,7 +54,7 @@ xm_inst_decoder #(.WORD(WORD), .LR(LR), .PC(PC)) decoder (
 	.constSel_o  (IconstSel),
 	.branchRes_o (IbranchRes),
 	.bcdEn_o     (IbcdEn),
-	.postAcc_o   (IpostAcc),
+	.preAcc_o    (IpreAcc),
 	.aluWrMode_o (IaluWrMode),
 	.immWrMode_o (IimmWrMode),
 	.memWrMode_o (ImemWrMode),
@@ -80,7 +80,7 @@ xm_controller #(.WORD(WORD), .LR(LR), .PC(PC)) controller (
 	.constSel_i  (IconstSel),
 	.branchRes_i (IbranchRes),
 	.bcdEn_i     (IbcdEn),
-	.postAcc_i   (IpostAcc),
+	.preAcc_i    (IpreAcc),
 	.aluWrMode_i (IaluWrMode),
 	.immWrMode_i (IimmWrMode),
 	.memWrMode_i (ImemWrMode),

@@ -14,7 +14,7 @@ module xm_inst_decoder
 	input wire[3:0] flags_i,
 	input wire[WORD-1:0] inst_i,
 
-	output reg byteOp_o, constSel_o, branchRes_o, bcdEn_o, postAcc_o,
+	output reg byteOp_o, constSel_o, branchRes_o, bcdEn_o, preAcc_o,
 	output reg[1:0]	aluWrMode_o, immWrMode_o, memWrMode_o,
 	output reg[2:0] regAdrA_o, regAdrB_o,
 	output reg[3:0] aluOp_o, flagsEn_o,
@@ -353,7 +353,7 @@ wire[2:0] accMode = inst[ACC_H:ACC_L];
 always @ (*) begin
 	relOffset_o <= {{MEM_SXT{inst[MEM_OFFS_H]}},inst[MEM_OFFS_H:MEM_OFFS_L]};
 	memWrMode_o <= {~byteOp_o, 1'b1};
-	postAcc_o 	<= inst[PRPO];
+	preAcc_o 	<= inst[PRPO];
 
 	casez(accMode)
 		NO_INC:		accOffset_o <= 16'h0;

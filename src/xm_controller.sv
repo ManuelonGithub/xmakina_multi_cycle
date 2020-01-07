@@ -13,7 +13,7 @@ module xm_controller
 
 	input wire memBusy_i, memWr_i,
 
-	input wire byteOp_i, constSel_i, branchRes_i, bcdEn_i, postAcc_i,
+	input wire byteOp_i, constSel_i, branchRes_i, bcdEn_i, preAcc_i,
 	input wire[1:0] aluWrMode_i, immWrMode_i, memWrMode_i,
 	input wire[2:0] regAdrA_i, regAdrB_i,
 	input wire[3:0] instOp_i, aluOp_i, flagsEn_i,
@@ -148,10 +148,10 @@ always @ (*) begin
 			memEn_o 		<= 1;
 			memRW_o 		<= 0;
 
-			if (postAcc_i)
-				adrSel_o	<= BASE_ADDR;
+			if (preAcc_i)
+				adrSel_o	<= OFFSET_ADDR;
 			else
-				adrSel_o 	<= OFFSET_ADDR;
+				adrSel_o 	<= BASE_ADDR;
 
 			byteOp_o 		<= byteOp_i;
 			memOffs_o		<= accOffset_i;
@@ -170,10 +170,10 @@ always @ (*) begin
 			memEn_o 		<= 1;
 			memRW_o 		<= 1;
 
-			if (postAcc_i)
-				adrSel_o	<= BASE_ADDR;
+			if (preAcc_i)
+				adrSel_o	<= OFFSET_ADDR;
 			else
-				adrSel_o 	<= OFFSET_ADDR;
+				adrSel_o 	<= BASE_ADDR;
 
 			byteOp_o 		<= byteOp_i;
 			memOffs_o		<= accOffset_i;

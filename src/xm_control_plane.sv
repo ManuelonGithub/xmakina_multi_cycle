@@ -16,7 +16,7 @@ module xm_control_plane
 	input wire[WORD-1:0] inst_i, status_i,
 
 	// Register file synchrnous control signals
-	output reg pcWr_o, regWr_o, irWr_o, flagsWr_o,
+	output reg pcWr_o, regWr_o, irWr_o, flagsWr_o, tempWr_o,
 
 	output reg memEn_o, memRW_o,
 
@@ -99,6 +99,7 @@ xm_controller #(.WORD(WORD), .LR(LR), .PC(PC)) controller (
 	.memEn_o     (memEn_o),
 	.irWr_o      (irWr_o),
 	.flagsWr_o   (flagsWr_o),
+	.tempWr_o    (tempWr_o),
 	.byteOp_o    (byteOp_o),
 	.memRW_o     (memRW_o),
 	.pcSel_o     (pcSel_o),

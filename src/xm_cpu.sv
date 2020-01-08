@@ -21,7 +21,7 @@ module xm_cpu
 );
 
 reg 		memBusy, memWr;
-reg 		pcWr, regWr, irWr, flagsWr;
+reg 		pcWr, regWr, irWr, flagsWr, tempWr;
 reg 		memEn, memRW;
 reg 		byteOp;
 reg 		pcSel;
@@ -36,7 +36,6 @@ reg[15:0]	omdr, ir, status;
 reg[15:0] 	memData, branchOffs, immVal, memOffs;
 
 reg 		statWr;
-reg[1:0] 	statWrMode;
 
 reg         badMem, pswAddr;
 reg[1:0]    datSel;
@@ -52,6 +51,7 @@ xm_control_plane control (
 	.regWr_o     (regWr),
 	.irWr_o      (irWr),
 	.flagsWr_o   (flagsWr),
+	.tempWr_o    (tempWr),
 	.memEn_o     (memEn),
 	.memRW_o     (memRW),
 	.byteOp_o    (byteOp),
@@ -80,6 +80,7 @@ xm_datapath datapath (
 	.irWr_i      (irWr),
 	.statWr_i    (statWr),
 	.flagsWr_i   (flagsWr),
+	.tempWr_i    (tempWr),
 	.byteOp_i    (byteOp),
 	.pcSel_i     (pcSel),
 	.aluBSel_i   (aluBSel),

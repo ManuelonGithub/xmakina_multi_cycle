@@ -1,0 +1,43 @@
+X-Makina Assembler - Version 2.0 (X April 2019)
+.ASM file: swap_test.asm
+Time of execution: Wed Jan  8 03:11:18 2020
+
+
+  1	    	     	
+  2	    	     	
+  3	    	     	
+  4	    	     	
+  5	    	     	org		$0
+  6	0000	61A0			MOVL	$1234,R0
+  7	0002	7890			MOVH	$1234,R0
+  8	    	     			
+  9	0004	6669			MOVL	$ABCD,R1
+ 10	0006	7D59			MOVH	$ABCD,R1
+ 11	    	     			
+ 12	0008	6902			MOVLZ	$20,R2
+ 13	    	     			
+ 14	000A	5482			ST		R0,R2+
+ 15	000C	548A			ST		R1,R2+
+ 16	    	     			
+ 17	000E	4C08			SWAP	R1,R0
+ 18	    	     			
+ 19	0010	5482			ST		R0,R2+
+ 20	0012	548A			ST		R1,R2+
+ 21	    	     			
+ 22	0014	3FFF	LOOP	BRA		LOOP
+Successful completion of assembly
+
+** Symbol table **
+Name                               	Type	Value	Decimal
+LOOP                               	LBL	0014	20
+R7                                 	REG	0007	7
+R6                                 	REG	0006	6
+R5                                 	REG	0005	5
+R4                                 	REG	0004	4
+R3                                 	REG	0003	3
+R2                                 	REG	0002	2
+R1                                 	REG	0001	1
+R0                                 	REG	0000	0
+
+.XME file: C:\Users\Manuel\Desktop\xmakina_multi_cycle\asm test files\swap test\swap_test.xme
+

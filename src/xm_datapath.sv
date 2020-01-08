@@ -19,7 +19,7 @@ module xm_datapath
 	input wire clk_i, arst_i, 
 
 	// synchrnous control signals
-	input wire pcWr_i, regWr_i, memEn_i, irWr_i, statWr_i, flagsWr_i,
+	input wire pcWr_i, regWr_i, memEn_i, irWr_i, statWr_i, flagsWr_i, tempWr_i,
 
 	// General operation control signals
 	input wire byteOp_i, pcSel_i,
@@ -49,7 +49,7 @@ localparam BYTE = 8;
 
 enum {PC_SEL, BASE_ADDR, OFFSET_ADDR} ADDR_SEL;
 enum {REGB_SEL, CONST_SEL, MEM_OFFS_SEL} ALU_B_SEL;
-enum {ALU_WR, PC_WR, MEM_WR, IMM_WR, TEMP_WR} REG_WRITE_SEL;
+enum {ALU_WR, PC_WR, MEM_WR, IMM_WR, TEMP_WR, ADDR_WR} REG_WRITE_SEL;
 
 reg[WORD-1:0] 	regWB, pcNew, pcOffset;		// Register File internal data inputs
 reg[WORD-1:0] 	regA, regB, pc, constVal;	// Register file internal data outputs
@@ -58,7 +58,7 @@ reg[WORD-1:0] 	addrSrc;
 reg[WORD-(WORD/BYTE):0] addr;
 
 reg[WORD-1:0] aluA, aluB, aluOut;
-reg[WORD-1:0] mar, imdr;
+reg[WORD-1:0] mar, temp;
 
 reg[WORD-1:0] aluRes;
 reg[BYTE-1:0] aluByteRes;
@@ -135,6 +135,12 @@ status_register StatusRegister (
 	.data_o    (status_o)
 );
 
+initial begin
+	mar 	<= 16'h0000;
+	omdr_o 	<= 16'h0000;
+	ir_o  	<= 16'h0000;
+end
+
 always @ (*) begin
 	mar_o <= mar[WORD-1:(WORD/BYTE)-1];
 	
@@ -150,6 +156,8 @@ always @ (*) begin
 	   PC_WR:   regWB <= pc;
 	   IMM_WR:	regWB <= immVal_i;
 	   MEM_WR:	regWB <= mem_i;
+	   TEMP_WR: regWB <= temp;
+	   ADDR_WR:	regWB <= aluRes;
 	   default:	regWB <= 16'h0000;
 	endcase
 
@@ -182,6 +190,8 @@ always @ (posedge clk_i) begin
 	end
 
 	if (irWr_i)	ir_o <= mem_i;
+
+	if (tempWr_i)	temp <= regA;
 end
 
 endmodule

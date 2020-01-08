@@ -45,6 +45,8 @@ module xm_datapath
 	output reg[WORD-1:0] omdr_o, ir_o, status_o
 );
 
+localparam BYTE = 8;
+
 enum {PC_SEL, BASE_ADDR, OFFSET_ADDR} ADDR_SEL;
 enum {REGB_SEL, CONST_SEL, MEM_OFFS_SEL} ALU_B_SEL;
 enum {ALU_WR, PC_WR, MEM_WR, IMM_WR, TEMP_WR} REG_WRITE_SEL;
@@ -53,12 +55,15 @@ reg[WORD-1:0] 	regWB, pcNew, pcOffset;		// Register File internal data inputs
 reg[WORD-1:0] 	regA, regB, pc, constVal;	// Register file internal data outputs
 
 reg[WORD-1:0] 	addrSrc;
-reg[WORD-(WORD/8):0] addr;
+reg[WORD-(WORD/BYTE):0] addr;
 
 reg[WORD-1:0] aluA, aluB, aluOut;
 reg[WORD-1:0] mar, imdr;
 
-reg[3:0] aluFlags, flags;
+reg[WORD-1:0] aluRes;
+reg[BYTE-1:0] aluByteRes;
+
+reg[3:0] aluFlags, aluByteFlags, flagsIn, flags;
 
 register_file registerFile (
 	.clk_i   (clk_i),
@@ -101,7 +106,17 @@ ALU alu (
     .a(aluA), 
     .b(aluB),
    	.flags(aluFlags),
-    .res(aluOut)
+    .res(aluRes)
+);
+
+ALU #(.WORD(BYTE)) aluByte (
+	.cin(flags[0]), 
+    .bcd(0),
+    .op(aluOp_i),
+    .a(aluA), 
+    .b(aluB),
+   	.flags(aluByteFlags),
+    .res(aluByteRes)
 );
 
 status_register StatusRegister (
@@ -113,7 +128,7 @@ status_register StatusRegister (
 	.flagsWr_i (flagsWr_i),
 	.wrMode_i  (statWrMode_i),
 	.flagsEn_i (flagsEn_i),
-	.flags_i   (aluFlags),
+	.flags_i   (flagsIn),
 	.priv_i    (0),
 	.data_i    (omdr_o),
 	.flags_o   (flags),
@@ -121,7 +136,7 @@ status_register StatusRegister (
 );
 
 always @ (*) begin
-	mar_o <= mar[WORD-1:(WORD/8)-1];
+	mar_o <= mar[WORD-1:(WORD/BYTE)-1];
 	
 	case (adrSel_i)
 		PC_SEL:			addrSrc <= pc;
@@ -145,14 +160,23 @@ always @ (*) begin
 		MEM_OFFS_SEL:	aluB <= memOffs_i;
 		default:		aluB <= 16'h0000;
 	endcase
+
+	if (byteOp_i) begin
+		aluOut 	<= {8'h00, aluByteRes};
+		flagsIn <= aluByteFlags;
+	end
+	else begin
+		aluOut 	<= aluRes;
+		flagsIn <= aluFlags;
+	end
 end
 
 always @ (posedge clk_i) begin
 	if (memEn_i) begin
 		mar 	<= addrSrc;
-		
+
 		if (byteOp_i)
-			omdr_o 	<= {regB[7:0], regB[7:0]};
+			omdr_o 	<= {regB[BYTE-1:0], regB[BYTE-1:0]};
 		else
 			omdr_o 	<= regB;
 	end

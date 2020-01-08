@@ -1,0 +1,41 @@
+X-Makina Assembler - Version 2.0 (X April 2019)
+.ASM file: byte_alu_test.asm
+Time of execution: Tue Jan  7 23:44:40 2020
+
+
+  1	    	     	
+  2	    	     	
+  3	    	     	
+  4	    	     	
+  5	    	     	org		$0
+  6	0000	61A0			MOVL	$1234,R0
+  7	0002	7890			MOVH	$1234,R0
+  8	    	     			
+  9	0004	4B41			MOV.B	R0,R1
+ 10	0006	4F01			SWPB	R1
+ 11	0008	40E9			ADD.B	#16,R1
+ 12	000A	42C9			SUB.B	#1,R1
+ 13	    	     			
+ 14	000C	4D41			SRA.B	R1
+ 15	    	     			
+ 16	000E	4BC8			MOV.B	#1,R0
+ 17	0010	40F8			ADD.B	#-1,R0
+ 18	0012	42C8			SUB.B	#1,R0
+ 19	    	     			
+ 20	0014	3FFF	LOOP	BRA		LOOP
+Successful completion of assembly
+
+** Symbol table **
+Name                               	Type	Value	Decimal
+LOOP                               	LBL	0014	20
+R7                                 	REG	0007	7
+R6                                 	REG	0006	6
+R5                                 	REG	0005	5
+R4                                 	REG	0004	4
+R3                                 	REG	0003	3
+R2                                 	REG	0002	2
+R1                                 	REG	0001	1
+R0                                 	REG	0000	0
+
+.XME file: C:\Users\Manuel\Desktop\xmakina_multi_cycle\asm test files\byte alu test\byte_alu_test.xme
+

@@ -29,7 +29,7 @@ always @ (*) begin
 	badMem_o <= ~byteEn_i & addr_i[0];
 
 	// PSW access check
-	pswAddr_o <= (addr_i == PSW_ADDR);
+	pswAddr_o <= (addr_i[15:1] == PSW_ADDR[15:1]);
 
 	// Address "Byte Lane" Decoding
 	case ({byteEn_i, addr_i[0]})

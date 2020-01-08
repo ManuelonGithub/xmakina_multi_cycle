@@ -5,7 +5,7 @@
 org		$0
 		BL		PROG
 		
-		org 	$10
+org 	$10
 PROG	
 		MOVL	'H',R0
 		SWPB	R0

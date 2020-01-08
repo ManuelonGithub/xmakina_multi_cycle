@@ -150,7 +150,11 @@ end
 always @ (posedge clk_i) begin
 	if (memEn_i) begin
 		mar 	<= addrSrc;
-		omdr_o 	<= regB;
+		
+		if (byteOp_i)
+			omdr_o 	<= {regB[7:0], regB[7:0]};
+		else
+			omdr_o 	<= regB;
 	end
 
 	if (irWr_i)	ir_o <= mem_i;

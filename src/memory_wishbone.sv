@@ -60,10 +60,7 @@ module mem_wishbone
          * a for loop is used to address each port.
          */
         for (rd_byte = 0; rd_byte < WORD_GL; rd_byte = rd_byte + 1) begin
-            if (sel_i[rd_byte]) 
-                dat_o[BYTE*rd_byte +: BYTE] <= mem[adr_i][BYTE*rd_byte +: BYTE]; 
-            else                
-                dat_o[BYTE*rd_byte +: BYTE] <= 8'hXX;
+            dat_o <= mem[adr_i];
         end
         /*
          * Write Procedure.

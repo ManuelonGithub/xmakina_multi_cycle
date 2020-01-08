@@ -128,7 +128,7 @@ always @ (*) begin
     
     case (sel_o)
         2'b01:      data_o <= {{WORD/2{1'b0}}, memData[WORD/2-1:0]};
-        2'b10:      data_o <= {memData[WORD-1:WORD/2], {WORD/2{1'b0}}};
+        2'b10:      data_o <= {{WORD/2{1'b0}}, memData[WORD-1:WORD/2]};
         default:    data_o <= memData;
     endcase
 end

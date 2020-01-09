@@ -42,6 +42,7 @@ reg[1:0]    datSel;
 
 reg debug, dbgMemEn;
 reg[2:0] dbgRegAddr;
+reg[15:0] dbgDat, dbgReg;
 
 xm_control_plane control (
 	.clk_i       (clk_i),
@@ -80,9 +81,10 @@ xm_control_plane control (
 xm_datapath datapath (
 	.clk_i       (clk_i),
 	.arst_i      (arst_i),
+	.memEn_i     (memEn),
+	.memWe_i     (memRW),
 	.pcWr_i      (pcWr),
 	.regWr_i     (regWr),
-	.memEn_i     (memEn),
 	.irWr_i      (irWr),
 	.statWr_i    (statWr),
 	.flagsWr_i   (flagsWr),
@@ -103,13 +105,15 @@ xm_datapath datapath (
 	.branchOffs_i(branchOffs),
 	.immVal_i    (immVal),
 	.memOffs_i   (memOffs),
+	.dbgDat_i    (dbgDat),
 	.badMem_o    (badMem),
 	.pswAddr_o   (pswAddr),
 	.datSel_o    (datSel),
 	.mar_o       (mar),
 	.omdr_o      (omdr),
 	.ir_o        (ir),
-	.status_o    (status)
+	.status_o    (status),
+	.dbgReg_o    (dbgReg)
 );
 
 // Memory Controller

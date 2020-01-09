@@ -19,7 +19,8 @@ module xm_datapath
 	input wire clk_i, arst_i, 
 
 	// synchrnous control signals
-	input wire pcWr_i, regWr_i, memEn_i, irWr_i, statWr_i, flagsWr_i, tempWr_i,
+	input wire memEn_i, memWe_i,
+	input wire pcWr_i, regWr_i, irWr_i, statWr_i, flagsWr_i, tempWr_i,
 
 	// General operation control signals
 	input wire byteOp_i, pcSel_i,
@@ -30,26 +31,26 @@ module xm_datapath
 	// Register File operation control signals
 	input wire[1:0]	regWrMode_i,
 	input wire[2:0] regWrSel_i,
-	input wire[2:0] regWrAdr_i, regAdrA_i, regAdrB_i, regAdrDbg_i,
+	input wire[2:0] regWrAdr_i, regAdrA_i, regAdrB_i,
     
     input wire[3:0] aluOp_i,
     input wire[3:0] flagsEn_i,
     
 	// Input data signals
-	input wire[WORD-1:0] mem_i, branchOffs_i, immVal_i, memOffs_i,
+	input wire[WORD-1:0] mem_i, branchOffs_i, immVal_i, memOffs_i, dbgDat_i,
 
 	output reg badMem_o, pswAddr_o,
 	output reg[1:0] datSel_o,
 	// Memory and Instruction output signals
 	output reg[WORD-(WORD/8):0] mar_o,
-	output reg[WORD-1:0] omdr_o, ir_o, status_o, regDbg_o
+	output reg[WORD-1:0] omdr_o, ir_o, status_o, dbgReg_o
 );
 
 localparam BYTE = 8;
 
-enum {PC_SEL, BASE_ADDR, OFFSET_ADDR} ADDR_SEL;
+enum {PC_SEL, BASE_ADDR, OFFSET_ADDR, DEBUG_ADDR} ADDR_SEL;
 enum {REGB_SEL, CONST_SEL, MEM_OFFS_SEL} ALU_B_SEL;
-enum {ALU_WR, PC_WR, MEM_WR, IMM_WR, TEMP_WR, ADDR_WR} REG_WRITE_SEL;
+enum {ALU_WR, PC_WR, MEM_WR, IMM_WR, TEMP_WR, ADDR_WR, DEBUG_WR} REG_WRITE_SEL;
 
 reg[WORD-1:0] 	regWB, pcNew, pcOffset;		// Register File internal data inputs
 reg[WORD-1:0] 	regA, regB, pc, constVal;	// Register file internal data outputs
@@ -65,17 +66,17 @@ reg[BYTE-1:0] aluByteRes;
 
 reg[3:0] aluFlags, aluByteFlags, flagsIn, flags;
 
-register_file #(.READ_PORTS(3)) registerFile (
+register_file registerFile (
 	.clk_i   (clk_i),
 	.arst_i  (arst_i),
 	.wrEn_i  (regWr_i),
 	.pcEn_i  (pcWr_i),
 	.wrMode_i(regWrMode_i),
 	.wrAddr_i(regWrAdr_i),
-	.rdAddr_i('{regAdrDbg_i, regAdrA_i, regAdrB_i}),
+	.rdAddr_i('{regAdrA_i, regAdrB_i}),
 	.data_i  (regWB),
 	.pc_i    (pcNew),
-	.data_o  ('{regDbg_o, regA, regB}),
+	.data_o  ('{regA, regB}),
 	.pc_o    (pc)
 );
 
@@ -148,6 +149,7 @@ always @ (*) begin
 		PC_SEL:			addrSrc <= pc;
 		BASE_ADDR:		addrSrc <= aluA;
 		OFFSET_ADDR:	addrSrc <= aluOut;
+		DEBUG_ADDR:		addrSrc <= dbgDat_i;
 		default:		addrSrc <= 16'h0000;
 	endcase
 
@@ -158,6 +160,7 @@ always @ (*) begin
 	   MEM_WR:	regWB <= mem_i;
 	   TEMP_WR: regWB <= temp;
 	   ADDR_WR:	regWB <= aluRes;
+	   DEBUG_WR: regWB <= dbgDat_i;
 	   default:	regWB <= 16'h0000;
 	endcase
 
@@ -177,20 +180,21 @@ always @ (*) begin
 		aluOut 	<= aluRes;
 		flagsIn <= aluFlags;
 	end
+
+	dbgReg_o <= regA;
 end
 
 always @ (posedge clk_i) begin
-	if (memEn_i) begin
-		mar 	<= addrSrc;
+	if (memEn_i) mar 	<= addrSrc;
 
+	if (memWe_i) begin
 		if (byteOp_i)
 			omdr_o 	<= {regB[BYTE-1:0], regB[BYTE-1:0]};
 		else
 			omdr_o 	<= regB;
 	end
 
-	if (irWr_i)	ir_o <= mem_i;
-
+	if (irWr_i)		ir_o <= mem_i;
 	if (tempWr_i)	temp <= regA;
 end
 

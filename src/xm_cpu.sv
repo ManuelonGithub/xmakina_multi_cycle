@@ -40,9 +40,15 @@ reg 		statWr;
 reg         badMem, pswAddr;
 reg[1:0]    datSel;
 
+reg debug, dbgMemEn;
+reg[2:0] dbgRegAddr;
+
 xm_control_plane control (
 	.clk_i       (clk_i),
 	.arst_i      (arst_i),
+	.debug_i     (debug),
+	.dbgMemEn_i  (dbgMemEn),
+	.dbgRegAdr_i (dbgRegAddr),
 	.memBusy_i   (memBusy),
 	.memWr_i     (memWr),
 	.inst_i      (ir),

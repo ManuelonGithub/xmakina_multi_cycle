@@ -9,7 +9,7 @@ module xm_controller
 	parameter PC = 7
  )
 (
-	input wire clk_i, arst_i,
+	input wire clk_i, arst_i, debug_i,
 
 	input wire memBusy_i, memWr_i,
 
@@ -19,6 +19,9 @@ module xm_controller
 	input wire[3:0] instOp_i, aluOp_i, flagsEn_i,
 	input wire[WORD-1:0] immVal_i, condOffset_i, linkOffset_i,
 	input wire[WORD-1:0] accOffset_i, relOffset_i,
+
+    input wire 		dbgMemEn_i,
+	input wire[2:0] dbgRegAdr_i,
 
 	output reg pcWr_o, regWr_o, memEn_o, irWr_o, flagsWr_o, tempWr_o,
 
@@ -36,6 +39,7 @@ module xm_controller
 );
 
 enum {
+	INIT, DEBUG, EXC_CHECK,
 	FETCH, DECODE, COND_BRANCH, LINK_BRANCH, 
 	ALU, ACC_LOAD, ACC_STORE, REL_LOAD, REL_STORE,
 	IMM_LOAD, SWAP, TRAP_CALL, COND_EXEC, 
@@ -50,9 +54,11 @@ enum {
 } ALU_OPS;
 
 enum {PLUS_2, BR_OFFSET} NEW_PC_SEL;
-enum {PC_SEL, BASE_ADDR, OFFSET_ADDR} ADDR_SEL;
+enum {PC_SEL, BASE_ADDR, OFFSET_ADDR, DEBUG_ADDR} ADDR_SEL;
 enum {REGB_SEL, CONST_SEL, MEM_OFFS_SEL} ALU_B_SEL;
-enum {ALU_WR, PC_WR, MEM_WR, IMM_WR, TEMP_WR, ADDR_WR} REG_WRITE_SEL;
+enum {ALU_WR, PC_WR, MEM_WR, IMM_WR, TEMP_WR, ADDR_WR, DEBUG_WR} REG_WRITE_SEL;
+
+enum {NO_WR, LB_WR, HB_WR, WORD_WR} WRITE_MODES;
 
 
 reg[4:0] state, next_state;
@@ -107,7 +113,7 @@ always @ (*) begin
 
 		COND_BRANCH: begin
 			// Execution of conditional branching only requires one cycle
-			next_state <= FETCH;
+			next_state <= EXC_CHECK;
 			
             branchOffs_o 	<= condOffset_i;	// Set branch offset to be the conditional branch offset
 			pcSel_o 		<= BR_OFFSET;		// Set the new PC offset to be the branch offset
@@ -117,20 +123,20 @@ always @ (*) begin
 
 		LINK_BRANCH: begin
 			// Execution of branch with link only requires one cycle
-			next_state 	<= FETCH;
+			next_state 	<= EXC_CHECK;
             
             branchOffs_o 	<= linkOffset_i;	// Set branch ofset to be the link branch offset
 			pcSel_o 		<= BR_OFFSET;		// Set the new PC offset to be the branch offset
 			pcWr_o 			<= 1;				// Write to PC
 			regWrAdr_o		<= LR;				// Set the link register as the register address to write to
 			regWr_o 		<= 1;				// Write to register file
-			regWrMode_o		<= 2'b11;			// Write full word to register
+			regWrMode_o		<= WORD_WR;			// Write full word to register
 			regWrSel_o  	<= PC_WR;			// Set register write-back data to be the PC
 		end
 		
 		ALU: begin
 			// execution of an ALU instruction only takes one cycle
-            next_state 	<= FETCH;
+            next_state 	<= EXC_CHECK;
             
             aluOp_o     <= aluOp_i;		// Set ALU operation to be the decoded operation
             byteOp_o 	<= byteOp_i;	// Set byte-op signal to the decoded byte-op bit
@@ -165,7 +171,7 @@ always @ (*) begin
 			regWrAdr_o		<= regAdrB_i;	// And so the address write-back also goes to register address B
 			regWr_o 		<= 1;			// Enable register write
 			regWrSel_o		<= ADDR_WR;		// Set the register write-back data source to be the offsetted address
-			regWrMode_o 	<= 2'b11;		// Full word write-back mode
+			regWrMode_o 	<= WORD_WR;		// Full word write-back mode
 		end
 
 		ACC_STORE: begin
@@ -186,7 +192,7 @@ always @ (*) begin
 			
 			regWr_o 		<= 1;			// Enable register write
 			regWrSel_o		<= ADDR_WR;		// Set the register write-back data source to be the offsetted address
-			regWrMode_o 	<= 2'b11;		// Full word write-back mode
+			regWrMode_o 	<= WORD_WR;		// Full word write-back mode
 		end
 
 		REL_LOAD: begin
@@ -217,7 +223,7 @@ always @ (*) begin
 		end
 
 		IMM_LOAD: begin
-			next_state 	<= FETCH;
+			next_state 	<= EXC_CHECK;
 
 			regWr_o  	<= 1;			// Set register write enable
 			regWrSel_o  <= IMM_WR;		// Set register write data to be the immediate value
@@ -232,7 +238,7 @@ always @ (*) begin
 			tempWr_o 	<= 1;	// Enable writing operand A to temporary register
 
 			regWr_o 	<= 1;		// Enable writing to register file
-			regWrMode_o	<= 2'b11;	// Set the register byte write mode so the whole register word is written
+			regWrMode_o	<= WORD_WR;	// Set the register byte write mode so the whole register word is written
 			regWrSel_o 	<= ALU_WR;	// Set register write-back data to be the ALU
 
 			aluOp_o		<= PASS_B;	// Set alu operation to pass operand B
@@ -243,7 +249,7 @@ always @ (*) begin
 			if (memBusy_i)
 				next_state <= MEM_CONFIRM;
 			else
-				next_state <= FETCH;
+				next_state <= EXC_CHECK;
 
 			byteOp_o <= byteOp_i;
 		end
@@ -253,7 +259,7 @@ always @ (*) begin
 			if (memBusy_i)
 				next_state <= MEM_CONFIRM;
 			else
-				next_state <= FETCH;
+				next_state <= EXC_CHECK;
 
 			byteOp_o 	<= byteOp_i;
 			regWr_o 	<= 1;			// Enable writing to register file
@@ -262,12 +268,34 @@ always @ (*) begin
 		end
 
 		SWAP_2: begin
-			next_state <= FETCH;
+			next_state <= EXC_CHECK;
 
 			regWrAdr_o 	<= regAdrB_i;	// Set the write-back register to be register B
 			regWr_o 	<= 1;			// Enable writing to register file
-			regWrMode_o	<= 2'b11;		// Set the register byte write mode so the whole register word is written
+			regWrMode_o	<= WORD_WR;		// Set the register byte write mode so the whole register word is written
 			regWrSel_o 	<= TEMP_WR;		// Set register write-back data to be the Temp. Register
+		end
+
+		EXC_CHECK: begin
+			if (debug_i) 
+				next_state <= DEBUG;
+			else
+				next_state <= FETCH;
+		end
+
+		DEBUG: begin
+			if (debug_i) 
+				next_state <= DEBUG;
+			else
+				next_state <= EXC_CHECK;
+			
+			regAdrA_o	<= dbgRegAdr_i;
+			// regWrAdr_o 	<= dbgRegAdr_i;
+			// regWr_o 	<= dbgRegWr_i;
+			// regWrMode_o	<= WORD_WR;
+
+			memEn_o 	<= dbgMemEn_i;
+			adrSel_o 	<= DEBUG_ADDR;
 		end
 
 		default: begin

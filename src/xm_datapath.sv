@@ -30,7 +30,7 @@ module xm_datapath
 	// Register File operation control signals
 	input wire[1:0]	regWrMode_i,
 	input wire[2:0] regWrSel_i,
-	input wire[2:0] regWrAdr_i, regAdrA_i, regAdrB_i,
+	input wire[2:0] regWrAdr_i, regAdrA_i, regAdrB_i, regAdrDbg_i,
     
     input wire[3:0] aluOp_i,
     input wire[3:0] flagsEn_i,
@@ -42,7 +42,7 @@ module xm_datapath
 	output reg[1:0] datSel_o,
 	// Memory and Instruction output signals
 	output reg[WORD-(WORD/8):0] mar_o,
-	output reg[WORD-1:0] omdr_o, ir_o, status_o
+	output reg[WORD-1:0] omdr_o, ir_o, status_o, regDbg_o
 );
 
 localparam BYTE = 8;
@@ -65,17 +65,17 @@ reg[BYTE-1:0] aluByteRes;
 
 reg[3:0] aluFlags, aluByteFlags, flagsIn, flags;
 
-register_file registerFile (
+register_file #(.READ_PORTS(3)) registerFile (
 	.clk_i   (clk_i),
 	.arst_i  (arst_i),
 	.wrEn_i  (regWr_i),
 	.pcEn_i  (pcWr_i),
 	.wrMode_i(regWrMode_i),
 	.wrAddr_i(regWrAdr_i),
-	.rdAddr_i('{regAdrA_i, regAdrB_i}),
+	.rdAddr_i('{regAdrDbg_i, regAdrA_i, regAdrB_i}),
 	.data_i  (regWB),
 	.pc_i    (pcNew),
-	.data_o  ('{regA, regB}),
+	.data_o  ('{regDbg_o, regA, regB}),
 	.pc_o    (pc)
 );
 

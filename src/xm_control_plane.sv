@@ -9,7 +9,10 @@ module xm_control_plane
 	parameter PC = 7
  )
 (
-	input wire clk_i, arst_i,
+	input wire clk_i, arst_i, debug_i,
+
+	input wire         dbgMemEn_i,
+	input wire[2:0]    dbgRegAdr_i,
 
 	input wire memBusy_i, memWr_i,
 
@@ -74,6 +77,7 @@ xm_inst_decoder #(.WORD(WORD), .LR(LR), .PC(PC)) decoder (
 xm_controller #(.WORD(WORD), .LR(LR), .PC(PC)) controller (
 	.clk_i       (clk_i),
 	.arst_i      (arst_i),
+	.debug_i     (debug_i),
 	.memBusy_i   (memBusy_i),
 	.memWr_i     (memWr_i),
 	.byteOp_i    (IbyteOp),
@@ -94,6 +98,8 @@ xm_controller #(.WORD(WORD), .LR(LR), .PC(PC)) controller (
 	.linkOffset_i(IlinkOffset),
 	.accOffset_i (IaccOffset),
 	.relOffset_i (IrelOffset),
+	.dbgMemEn_i  (dbgMemEn_i),
+	.dbgRegAdr_i (dbgRegAdr_i),
 	.pcWr_o      (pcWr_o),
 	.regWr_o     (regWr_o),
 	.memEn_o     (memEn_o),

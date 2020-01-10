@@ -20,12 +20,21 @@ module memory_tester
 	output reg[15:0]	dat_o
 );
 
-enum {ADDR_LATCH, ACTION_STALL, DATA_LATCH, DATA_WRITE} TEST_STATES;
+enum {ADDR_LATCH, DATA_LATCH, DATA_WRITE} TEST_STATES;
 
-reg[2:0] state, next_state;
+reg[1:0] state, next_state;
+
+reg actionLatch;
+reg actionPressed;
+
+// Action Pressed will only be high for a single cycle after action is high
+// After that, action must be low for a single cycle before
+// action Pressed can be high
+assign actionPressed = ~actionLatch & action_i;
 
 initial begin
 	state <= ADDR_LATCH;
+	actionLatch <= 0;
 end
 
 always @ (*) begin
@@ -38,28 +47,19 @@ always @ (*) begin
 
 	case (state) 
 		ADDR_LATCH: begin
-			if (action_i) 
-				next_state <= ACTION_STALL;
+			if (actionPressed) 
+				next_state <= DATA_LATCH;
 			else
 				next_state <= ADDR_LATCH;
 		end
-		ACTION_STALL: begin
-			if (~action_i) 
-				next_state <= DATA_LATCH;
-			else
-				next_state <= ACTION_STALL;
-		end
 		DATA_LATCH: begin
-			if (action_i) 
+			if (actionPressed) 
 				next_state <= DATA_WRITE;
 			else
 				next_state <= DATA_LATCH;
 		end
 		DATA_WRITE: begin
-			if (~action_i) 
-				next_state <= ADDR_LATCH;
-			else
-				next_state <= DATA_WRITE;
+			next_state <= ADDR_LATCH;
 
 			we_o <= 1;
 		end
@@ -71,6 +71,8 @@ end
 
 always @ (posedge clk_i) begin
 	state <= next_state;
+
+	actionLatch <= action_i;
 
 	case (state) 
 		ADDR_LATCH: begin

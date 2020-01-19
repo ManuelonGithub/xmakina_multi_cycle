@@ -16,7 +16,6 @@ module display_driver
 
 localparam NIBBLE = 4;
 
-
 reg[3:0] dispData[DISPLAYS];
 
 reg[$clog2(DISPLAYS)-1:0] dispCycle;

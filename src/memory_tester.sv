@@ -81,7 +81,7 @@ always @ (posedge clk_i) begin
 		end
 		DATA_LATCH: begin
 			dat_o 	<= data_i;
-			data_o 	<= data_i;
+			data_o 	<= adr_o;
 		end
 	endcase
 end
